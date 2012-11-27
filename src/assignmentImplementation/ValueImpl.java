@@ -6,9 +6,9 @@ import keyValueBaseInterfaces.Value;
 public class ValueImpl implements Value
 {
 
-	public String toString() {
-		return null;
-	}
-	
+    public String toString() {
+        return null;
+    }
+    
 }
 
