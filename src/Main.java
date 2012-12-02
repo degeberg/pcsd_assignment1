@@ -9,10 +9,8 @@ import assignmentImplementation.KeyValueBaseService;
 public class Main {
 
     public static void main(String[] args) throws IndexOutOfBoundsException, IOException {
-        IndexImpl idx = new IndexImpl();
-
         Endpoint.publish("http://localhost:8080/kv",
-                new KeyValueBaseService(idx));
+                new KeyValueBaseService());
 
     }
 

@@ -25,10 +25,12 @@ import assignmentImplementation.ValueListImpl;
 @SOAPBinding(style = Style.RPC)
 public class KeyValueBaseService {
 	private KeyValueBaseImpl lort;
+	private IndexImpl idx;
 
 	
-    public KeyValueBaseService(IndexImpl index) {
-    	lort = new KeyValueBaseImpl(index);
+    public KeyValueBaseService() throws IndexOutOfBoundsException, IOException {
+    	idx = new IndexImpl();
+    	lort = new KeyValueBaseImpl(idx);
     }
 
     @WebMethod
