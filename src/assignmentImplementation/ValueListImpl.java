@@ -1,41 +1,39 @@
 package assignmentImplementation;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import keyValueBaseInterfaces.ValueList;
 
-@SuppressWarnings("serial")
 public class ValueListImpl implements ValueList<ValueImpl>{
+    private static final long serialVersionUID = -2327808136525385315L;
+    
+    private ArrayList<ValueImpl> l;
     
     @Override
     public void add(ValueImpl v) {
-        // TODO Auto-generated method stub
-        
+        l.add(v);
     }
 
     @Override
     public void remove(ValueImpl v) {
-        // TODO Auto-generated method stub
-        
+        l.remove(v);
     }
 
     @Override
-    public void merge(ValueList<ValueImpl> v) {
-        // TODO Auto-generated method stub
-        
+    public void merge(ValueList<ValueImpl> vl) {
+        l.addAll(vl.toList());
     }
 
     @Override
     public List<ValueImpl> toList() {
-        // TODO Auto-generated method stub
-        return null;
+        return l;
     }
     
     @Override
     public Iterator<ValueImpl> iterator() {
-        // TODO Auto-generated method stub
-        return null;
+        return l.iterator();
     }
 
 }

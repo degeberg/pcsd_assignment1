@@ -2,12 +2,22 @@ package assignmentImplementation;
 
 import keyValueBaseInterfaces.Value;
 
-@SuppressWarnings("serial")
 public class ValueImpl implements Value
 {
+    private static final long serialVersionUID = 4117889269011986973L;
+    
+    private Integer v;
+    
+    public ValueImpl(Integer val) {
+        this.v = val;
+    }
+    
+    public Integer get() {
+        return this.v;
+    }
 
     public String toString() {
-        return null;
+        return v.toString();
     }
     
 }

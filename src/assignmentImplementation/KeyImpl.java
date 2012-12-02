@@ -4,16 +4,23 @@ import keyValueBaseInterfaces.Key;
 
 public class KeyImpl implements Key<KeyImpl>
 {
+    private Integer k;
+    
+    public KeyImpl(Integer key) {
+        this.k = key;
+    }
+    
+    public Integer get() {
+        return this.k;
+    }
 
     @Override
-    public int compareTo(KeyImpl arg0) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int compareTo(KeyImpl other) {
+        return k.compareTo(other.k);
     }
     
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return k.toString();
     }
 
 }
