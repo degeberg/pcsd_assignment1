@@ -27,9 +27,12 @@ public class ObjectFactory {
     private final static QName _IOException_QNAME = new QName("http://assignmentImplementation/", "IOException");
     private final static QName _KeyAlreadyPresentException_QNAME = new QName("http://assignmentImplementation/", "KeyAlreadyPresentException");
     private final static QName _ServiceNotInitializedException_QNAME = new QName("http://assignmentImplementation/", "ServiceNotInitializedException");
+    private final static QName _ValueListImpl_QNAME = new QName("http://assignmentImplementation/", "valueListImpl");
     private final static QName _KeyNotFoundException_QNAME = new QName("http://assignmentImplementation/", "KeyNotFoundException");
     private final static QName _FileNotFoundException_QNAME = new QName("http://assignmentImplementation/", "FileNotFoundException");
+    private final static QName _ValueImpl_QNAME = new QName("http://assignmentImplementation/", "valueImpl");
     private final static QName _ServiceInitializingException_QNAME = new QName("http://assignmentImplementation/", "ServiceInitializingException");
+    private final static QName _KeyImpl_QNAME = new QName("http://assignmentImplementation/", "keyImpl");
     private final static QName _ServiceAlreadyInitializedException_QNAME = new QName("http://assignmentImplementation/", "ServiceAlreadyInitializedException");
     private final static QName _BeginGreaterThanEndException_QNAME = new QName("http://assignmentImplementation/", "BeginGreaterThanEndException");
 
@@ -57,6 +60,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ValueListImpl }
+     * 
+     */
+    public ValueListImpl createValueListImpl() {
+        return new ValueListImpl();
+    }
+
+    /**
      * Create an instance of {@link ServiceNotInitializedException }
      * 
      */
@@ -73,11 +84,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ValueImpl }
+     * 
+     */
+    public ValueImpl createValueImpl() {
+        return new ValueImpl();
+    }
+
+    /**
      * Create an instance of {@link FileNotFoundException }
      * 
      */
     public FileNotFoundException createFileNotFoundException() {
         return new FileNotFoundException();
+    }
+
+    /**
+     * Create an instance of {@link KeyImpl }
+     * 
+     */
+    public KeyImpl createKeyImpl() {
+        return new KeyImpl();
     }
 
     /**
@@ -113,22 +140,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ValueListImpl }
-     * 
-     */
-    public ValueListImpl createValueListImpl() {
-        return new ValueListImpl();
-    }
-
-    /**
-     * Create an instance of {@link KeyImpl }
-     * 
-     */
-    public KeyImpl createKeyImpl() {
-        return new KeyImpl();
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link IOException }{@code >}}
      * 
      */
@@ -156,6 +167,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ValueListImpl }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "valueListImpl")
+    public JAXBElement<ValueListImpl> createValueListImpl(ValueListImpl value) {
+        return new JAXBElement<ValueListImpl>(_ValueListImpl_QNAME, ValueListImpl.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link KeyNotFoundException }{@code >}}
      * 
      */
@@ -174,12 +194,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ValueImpl }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "valueImpl")
+    public JAXBElement<ValueImpl> createValueImpl(ValueImpl value) {
+        return new JAXBElement<ValueImpl>(_ValueImpl_QNAME, ValueImpl.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ServiceInitializingException }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "ServiceInitializingException")
     public JAXBElement<ServiceInitializingException> createServiceInitializingException(ServiceInitializingException value) {
         return new JAXBElement<ServiceInitializingException>(_ServiceInitializingException_QNAME, ServiceInitializingException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link KeyImpl }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "keyImpl")
+    public JAXBElement<KeyImpl> createKeyImpl(KeyImpl value) {
+        return new JAXBElement<KeyImpl>(_KeyImpl_QNAME, KeyImpl.class, null, value);
     }
 
     /**

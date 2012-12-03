@@ -1,23 +1,26 @@
 package assignmentImplementation;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import keyValueBaseInterfaces.Value;
 
+@XmlRootElement
 public class ValueImpl implements Value
 {
     private static final long serialVersionUID = 4117889269011986973L;
     
-    private Integer v;
+    private Integer value;
     
-    public ValueImpl(Integer val) {
-        this.v = val;
+    public Integer getValue() {
+        return this.value;
     }
     
-    public Integer get() {
-        return this.v;
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
     public String toString() {
-        return v.toString();
+        return value.toString();
     }
     
 }

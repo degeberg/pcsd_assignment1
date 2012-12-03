@@ -1,12 +1,11 @@
 package assignmentImplementation;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -39,37 +38,46 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         BufferedReader b = null;
 
         try {
-        	b = new BufferedReader(new FileReader(serverFilename));
-        	String str;
+            b = new BufferedReader(new FileReader(serverFilename));
+            String str;
+            Integer prevKey = null;
+            ValueListImpl vl = new ValueListImpl();
 
             while ((str = b.readLine()) != null) {
-            	s = new Scanner(str);
-            	Integer key = s.nextInt();
-            	ValueListImpl vl = new ValueListImpl();
-            	System.out.print(key);
-            	while (s.hasNextInt())
-            	{
-            		Integer x = s.nextInt();
-            		System.out.print(" ");
-            		System.out.print(x);
-            		vl.add(new ValueImpl(x));
-            	}
-            	System.out.println();
+                s = new Scanner(str);
+                Integer key = s.nextInt();
+                if (prevKey != null && !prevKey.equals(key)) {
+                    KeyImpl k = new KeyImpl();
+                    k.setKey(prevKey);
+                    index.insert(k, vl);
+                    vl = new ValueListImpl();
+                }
+                while (s.hasNextInt()) {
+                    Integer x = s.nextInt();
+                    ValueImpl v = new ValueImpl();
+                    v.setValue(x);
+                    vl.add(v);
+                }
                 s.close();
+                prevKey = key;
+            }
+            if (prevKey != null) {
+                KeyImpl k = new KeyImpl();
+                k.setKey(prevKey);
+                index.insert(k, vl);
             }
         } catch (Exception e) {
-        	e.printStackTrace();
-            throw new ServiceInitializingException("something is fucked up");
+            e.printStackTrace();
         } finally {
             if (s != null) {
                 s.close();
             }
             if (b != null) {
-            	try {
-					b.close();
-				} catch (IOException e) {
-					throw new ServiceInitializingException("Error while closing IO stream.");
-				}
+                try {
+                    b.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -152,7 +160,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
-        
+
         index.bulkPut(mappings);
     }
 
