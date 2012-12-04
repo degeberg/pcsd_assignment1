@@ -1,26 +1,28 @@
 package assignmentImplementation;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import keyValueBaseInterfaces.Key;
 
+@XmlRootElement
 public class KeyImpl implements Key<KeyImpl>
 {
-    private Integer k;
-    
-    public KeyImpl(Integer key) {
-        this.k = key;
-    }
-    
-    public Integer get() {
-        return this.k;
+    private Integer key;
+
+    public void setKey(Integer key) {
+        this.key = key;
     }
 
-    @Override
+    public Integer getKey() {
+        return this.key;
+    }
+
     public int compareTo(KeyImpl other) {
-        return k.compareTo(other.k);
+        return key.compareTo(other.key);
     }
     
     public String toString() {
-        return k.toString();
+        return key.toString();
     }
 
 }

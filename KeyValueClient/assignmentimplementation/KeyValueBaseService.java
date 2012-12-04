@@ -33,8 +33,8 @@ public interface KeyValueBaseService {
      * @return
      *     returns assignmentimplementation.ArrayList
      * @throws BeginGreaterThanEndException_Exception
-     * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -56,8 +56,8 @@ public interface KeyValueBaseService {
     /**
      * 
      * @param arg0
-     * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/bulkPutRequest", output = "http://assignmentImplementation/KeyValueBaseService/bulkPutResponse", fault = {
@@ -92,8 +92,8 @@ public interface KeyValueBaseService {
     /**
      * 
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/deleteRequest", output = "http://assignmentImplementation/KeyValueBaseService/deleteResponse", fault = {
@@ -110,9 +110,9 @@ public interface KeyValueBaseService {
      * 
      * @param arg1
      * @param arg0
+     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
      * @throws KeyAlreadyPresentException_Exception
-     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/insertRequest", output = "http://assignmentImplementation/KeyValueBaseService/insertResponse", fault = {
@@ -133,9 +133,9 @@ public interface KeyValueBaseService {
      * @param arg0
      * @return
      *     returns assignmentimplementation.ValueListImpl
-     * @throws IOException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -154,9 +154,9 @@ public interface KeyValueBaseService {
      * 
      * @param arg1
      * @param arg0
-     * @throws IOException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/updateRequest", output = "http://assignmentImplementation/KeyValueBaseService/updateResponse", fault = {
@@ -179,9 +179,9 @@ public interface KeyValueBaseService {
      * @param arg0
      * @return
      *     returns assignmentimplementation.ArrayList
-     * @throws IOException_Exception
      * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
