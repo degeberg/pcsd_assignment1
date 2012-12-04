@@ -45,6 +45,21 @@ public class Main {
 		testScan();
 		
 		testBulkPut();
+		
+		key = new KeyImpl();
+        key.setKey(42);
+        
+        ValueImpl v = new ValueImpl();
+        v.setValue(-1);
+        
+        vl = new ValueListImpl();
+        vl.getElements().add(v);
+		
+		Thread threads[] = new Thread[50];
+		for (int i = 0; i < threads.length; i++) {
+			threads[i] = new Client(kv, i);
+			threads[i].start();
+		}
 	}
 	
 	static private void testBulkPut() throws Exception
@@ -88,7 +103,7 @@ public class Main {
 		}
 	}
 	
-	static private void printKey(int k) throws Exception {
+	static public void printKey(int k) throws Exception {
 		System.out.println("Key: " + k);
 		KeyImpl key = new KeyImpl();
 		key.setKey(k);
