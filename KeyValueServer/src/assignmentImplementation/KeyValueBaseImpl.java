@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -20,16 +22,23 @@ import keyValueBaseInterfaces.Predicate;
 public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     private boolean initialized;
     private IndexImpl index;
+    private ReentrantReadWriteLock rwl;
+    private Lock r;
+    private Lock w;
 
     public KeyValueBaseImpl(IndexImpl index) {
         initialized = false;
         this.index = index;
+        rwl = new ReentrantReadWriteLock();
+        r = rwl.readLock();
+        w = rwl.writeLock();
     }
 
     @Override
-    synchronized public void init(String serverFilename)
+    public void init(String serverFilename)
             throws ServiceAlreadyInitializedException,
             ServiceInitializingException {
+        w.lock();
         if (initialized) {
             throw new ServiceAlreadyInitializedException();
         }
@@ -82,48 +91,69 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         }
 
         initialized = true;
+        w.unlock();
     }
 
     @Override
-    synchronized public ValueListImpl read(KeyImpl k) throws KeyNotFoundException,
+    public ValueListImpl read(KeyImpl k) throws KeyNotFoundException,
             IOException, ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
 
-        return index.get(k);
+        r.lock();
+        try {
+            return index.get(k);
+        } finally {
+            r.unlock();
+        }
     }
 
     @Override
-    synchronized public void insert(KeyImpl k, ValueListImpl v)
+    public void insert(KeyImpl k, ValueListImpl v)
             throws KeyAlreadyPresentException, IOException,
             ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
 
-        index.insert(k, v);
+        w.lock();
+        try {
+            index.insert(k, v);
+        } finally {
+            w.unlock();
+        }
     }
 
     @Override
-    synchronized public void update(KeyImpl k, ValueListImpl newV)
+    public void update(KeyImpl k, ValueListImpl newV)
             throws KeyNotFoundException, IOException,
             ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
 
-        index.update(k, newV);
+        w.lock();
+        try {
+            index.update(k, newV);
+        } finally {
+            w.unlock();
+        }
     }
 
     @Override
-    synchronized public void delete(KeyImpl k) throws KeyNotFoundException,
+    public void delete(KeyImpl k) throws KeyNotFoundException,
             ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
 
-        index.remove(k);
+        w.lock();
+        try {
+            index.remove(k);
+        } finally {
+            w.unlock();
+        }
     }
 
     @Override
@@ -153,8 +183,13 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
-        // TODO Auto-generated method stub
-        return null;
+        
+        r.lock();
+        try {
+            return scan(begin, end, p);
+        } finally {
+            r.unlock();
+        }
     }
 
     @Override
@@ -164,7 +199,12 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
 
-        index.bulkPut(mappings);
+        w.lock();
+        try {
+            index.bulkPut(mappings);
+        } finally {
+            w.unlock();
+        }
     }
 
 }

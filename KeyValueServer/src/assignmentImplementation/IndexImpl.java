@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -31,7 +30,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     }
 
     @Override
-    synchronized public void insert(KeyImpl k, ValueListImpl v)
+    public void insert(KeyImpl k, ValueListImpl v)
             throws KeyAlreadyPresentException, IOException {
         if (positions.containsKey(k)) {
             throw new KeyAlreadyPresentException(k);
@@ -55,7 +54,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     }
 
     @Override
-    synchronized public void remove(KeyImpl k) throws KeyNotFoundException {
+    public void remove(KeyImpl k) throws KeyNotFoundException {
         if (!positions.containsKey(k)) {
             throw new KeyNotFoundException(k);
         }
@@ -92,7 +91,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     }
 
     @Override
-    synchronized public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
+    public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
             IOException {
         Pair<Long, Integer> p = positions.get(k);
         if (p == null) {
@@ -104,7 +103,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     }
 
     @Override
-    synchronized public void update(KeyImpl k, ValueListImpl v) throws KeyNotFoundException,
+    public void update(KeyImpl k, ValueListImpl v) throws KeyNotFoundException,
             IOException {
         remove(k);
         try {
@@ -145,7 +144,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     }
 
     @Override
-    synchronized public void bulkPut(List<Pair<KeyImpl, ValueListImpl>> keys)
+    public void bulkPut(List<Pair<KeyImpl, ValueListImpl>> keys)
             throws IOException {
         for (Pair<KeyImpl, ValueListImpl> p : keys) {
             if (positions.containsKey(p.getKey())) {

@@ -20,13 +20,13 @@ public class Client extends Thread {
 	@Override
 	public void run() {
 		Random rand = new Random();
-		int min = 10;
-		int max = 500;
+		int min = 100;
+		int max = 1500;
 
 		int randomNum = rand.nextInt(max - min + 1) + min;
 
         try {
-			Thread.sleep(randomNum);
+        	Thread.sleep(randomNum);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,6 +43,7 @@ public class Client extends Thread {
         
         try {
         	kv.update(key, vl);
+        	Thread.sleep(randomNum);
         	synchronized (kv) {
 	        	System.out.println("Thread " + threadNumber + ":");
 	        	Main.printKey(42);

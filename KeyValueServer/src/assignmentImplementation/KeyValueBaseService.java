@@ -2,16 +2,12 @@ package assignmentImplementation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -21,10 +17,6 @@ import keyValueBaseExceptions.ServiceInitializingException;
 import keyValueBaseExceptions.ServiceNotInitializedException;
 import keyValueBaseInterfaces.Pair;
 import keyValueBaseInterfaces.Predicate;
-import assignmentImplementation.IndexImpl;
-import assignmentImplementation.KeyImpl;
-import assignmentImplementation.KeyValueBaseImpl;
-import assignmentImplementation.ValueListImpl;
 
 @WebService
 @SOAPBinding(style = Style.RPC)

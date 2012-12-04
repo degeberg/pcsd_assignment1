@@ -2,7 +2,6 @@ package test;
 
 import java.util.List;
 
-import assignmentimplementation.ArrayList;
 import assignmentimplementation.BeginGreaterThanEndException_Exception;
 import assignmentimplementation.BulkList;
 import assignmentimplementation.IOException_Exception;
