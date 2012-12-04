@@ -27,7 +27,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public void init(String serverFilename)
+    synchronized public void init(String serverFilename)
             throws ServiceAlreadyInitializedException,
             ServiceInitializingException {
         if (initialized) {
@@ -85,7 +85,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public ValueListImpl read(KeyImpl k) throws KeyNotFoundException,
+    synchronized public ValueListImpl read(KeyImpl k) throws KeyNotFoundException,
             IOException, ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
@@ -95,7 +95,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public void insert(KeyImpl k, ValueListImpl v)
+    synchronized public void insert(KeyImpl k, ValueListImpl v)
             throws KeyAlreadyPresentException, IOException,
             ServiceNotInitializedException {
         if (!initialized) {
@@ -106,7 +106,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public void update(KeyImpl k, ValueListImpl newV)
+    synchronized public void update(KeyImpl k, ValueListImpl newV)
             throws KeyNotFoundException, IOException,
             ServiceNotInitializedException {
         if (!initialized) {
@@ -117,7 +117,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public void delete(KeyImpl k) throws KeyNotFoundException,
+    synchronized public void delete(KeyImpl k) throws KeyNotFoundException,
             ServiceNotInitializedException {
         if (!initialized) {
             throw new ServiceNotInitializedException();
@@ -147,7 +147,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     }
 
     @Override
-    public List<ValueListImpl> atomicScan(KeyImpl begin, KeyImpl end,
+    synchronized public List<ValueListImpl> atomicScan(KeyImpl begin, KeyImpl end,
             Predicate<ValueListImpl> p) throws IOException,
             BeginGreaterThanEndException, ServiceNotInitializedException {
         if (!initialized) {
