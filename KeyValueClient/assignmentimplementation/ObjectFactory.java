@@ -27,14 +27,17 @@ public class ObjectFactory {
     private final static QName _IOException_QNAME = new QName("http://assignmentImplementation/", "IOException");
     private final static QName _KeyAlreadyPresentException_QNAME = new QName("http://assignmentImplementation/", "KeyAlreadyPresentException");
     private final static QName _ServiceNotInitializedException_QNAME = new QName("http://assignmentImplementation/", "ServiceNotInitializedException");
-    private final static QName _ValueListImpl_QNAME = new QName("http://assignmentImplementation/", "valueListImpl");
+    private final static QName _LengthPredicate_QNAME = new QName("http://assignmentImplementation/", "lengthPredicate");
     private final static QName _KeyNotFoundException_QNAME = new QName("http://assignmentImplementation/", "KeyNotFoundException");
-    private final static QName _FileNotFoundException_QNAME = new QName("http://assignmentImplementation/", "FileNotFoundException");
+    private final static QName _Predicate_QNAME = new QName("http://assignmentImplementation/", "predicate");
     private final static QName _ValueImpl_QNAME = new QName("http://assignmentImplementation/", "valueImpl");
     private final static QName _ServiceInitializingException_QNAME = new QName("http://assignmentImplementation/", "ServiceInitializingException");
-    private final static QName _KeyImpl_QNAME = new QName("http://assignmentImplementation/", "keyImpl");
     private final static QName _ServiceAlreadyInitializedException_QNAME = new QName("http://assignmentImplementation/", "ServiceAlreadyInitializedException");
     private final static QName _BeginGreaterThanEndException_QNAME = new QName("http://assignmentImplementation/", "BeginGreaterThanEndException");
+    private final static QName _BulkList_QNAME = new QName("http://assignmentImplementation/", "bulkList");
+    private final static QName _ValueListImpl_QNAME = new QName("http://assignmentImplementation/", "valueListImpl");
+    private final static QName _FileNotFoundException_QNAME = new QName("http://assignmentImplementation/", "FileNotFoundException");
+    private final static QName _KeyImpl_QNAME = new QName("http://assignmentImplementation/", "keyImpl");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: assignmentimplementation
@@ -60,19 +63,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ValueListImpl }
-     * 
-     */
-    public ValueListImpl createValueListImpl() {
-        return new ValueListImpl();
-    }
-
-    /**
      * Create an instance of {@link ServiceNotInitializedException }
      * 
      */
     public ServiceNotInitializedException createServiceNotInitializedException() {
         return new ServiceNotInitializedException();
+    }
+
+    /**
+     * Create an instance of {@link LengthPredicate }
+     * 
+     */
+    public LengthPredicate createLengthPredicate() {
+        return new LengthPredicate();
     }
 
     /**
@@ -89,22 +92,6 @@ public class ObjectFactory {
      */
     public ValueImpl createValueImpl() {
         return new ValueImpl();
-    }
-
-    /**
-     * Create an instance of {@link FileNotFoundException }
-     * 
-     */
-    public FileNotFoundException createFileNotFoundException() {
-        return new FileNotFoundException();
-    }
-
-    /**
-     * Create an instance of {@link KeyImpl }
-     * 
-     */
-    public KeyImpl createKeyImpl() {
-        return new KeyImpl();
     }
 
     /**
@@ -132,11 +119,43 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ArrayList }
+     * Create an instance of {@link BulkList }
      * 
      */
-    public ArrayList createArrayList() {
-        return new ArrayList();
+    public BulkList createBulkList() {
+        return new BulkList();
+    }
+
+    /**
+     * Create an instance of {@link ValueListImpl }
+     * 
+     */
+    public ValueListImpl createValueListImpl() {
+        return new ValueListImpl();
+    }
+
+    /**
+     * Create an instance of {@link FileNotFoundException }
+     * 
+     */
+    public FileNotFoundException createFileNotFoundException() {
+        return new FileNotFoundException();
+    }
+
+    /**
+     * Create an instance of {@link KeyImpl }
+     * 
+     */
+    public KeyImpl createKeyImpl() {
+        return new KeyImpl();
+    }
+
+    /**
+     * Create an instance of {@link ValueListImplArray }
+     * 
+     */
+    public ValueListImplArray createValueListImplArray() {
+        return new ValueListImplArray();
     }
 
     /**
@@ -167,12 +186,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ValueListImpl }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link LengthPredicate }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "valueListImpl")
-    public JAXBElement<ValueListImpl> createValueListImpl(ValueListImpl value) {
-        return new JAXBElement<ValueListImpl>(_ValueListImpl_QNAME, ValueListImpl.class, null, value);
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "lengthPredicate")
+    public JAXBElement<LengthPredicate> createLengthPredicate(LengthPredicate value) {
+        return new JAXBElement<LengthPredicate>(_LengthPredicate_QNAME, LengthPredicate.class, null, value);
     }
 
     /**
@@ -185,12 +204,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link FileNotFoundException }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link Predicate }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "FileNotFoundException")
-    public JAXBElement<FileNotFoundException> createFileNotFoundException(FileNotFoundException value) {
-        return new JAXBElement<FileNotFoundException>(_FileNotFoundException_QNAME, FileNotFoundException.class, null, value);
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "predicate")
+    public JAXBElement<Predicate> createPredicate(Predicate value) {
+        return new JAXBElement<Predicate>(_Predicate_QNAME, Predicate.class, null, value);
     }
 
     /**
@@ -212,15 +231,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link KeyImpl }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "keyImpl")
-    public JAXBElement<KeyImpl> createKeyImpl(KeyImpl value) {
-        return new JAXBElement<KeyImpl>(_KeyImpl_QNAME, KeyImpl.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ServiceAlreadyInitializedException }{@code >}}
      * 
      */
@@ -236,6 +246,42 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "BeginGreaterThanEndException")
     public JAXBElement<BeginGreaterThanEndException> createBeginGreaterThanEndException(BeginGreaterThanEndException value) {
         return new JAXBElement<BeginGreaterThanEndException>(_BeginGreaterThanEndException_QNAME, BeginGreaterThanEndException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link BulkList }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "bulkList")
+    public JAXBElement<BulkList> createBulkList(BulkList value) {
+        return new JAXBElement<BulkList>(_BulkList_QNAME, BulkList.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ValueListImpl }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "valueListImpl")
+    public JAXBElement<ValueListImpl> createValueListImpl(ValueListImpl value) {
+        return new JAXBElement<ValueListImpl>(_ValueListImpl_QNAME, ValueListImpl.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FileNotFoundException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "FileNotFoundException")
+    public JAXBElement<FileNotFoundException> createFileNotFoundException(FileNotFoundException value) {
+        return new JAXBElement<FileNotFoundException>(_FileNotFoundException_QNAME, FileNotFoundException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link KeyImpl }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://assignmentImplementation/", name = "keyImpl")
+    public JAXBElement<KeyImpl> createKeyImpl(KeyImpl value) {
+        return new JAXBElement<KeyImpl>(_KeyImpl_QNAME, KeyImpl.class, null, value);
     }
 
 }

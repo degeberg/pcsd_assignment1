@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -20,12 +21,13 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
 {
     private StoreImpl store;
     private TreeMap<KeyImpl, Pair<Long, Integer>> positions; // Key -> (Position, Length)
-    private long nextAvailable; // TODO: Find better way of allocating space
+    private ArrayList<Pair<Long, Long>> blocks;
     
     public IndexImpl() throws IndexOutOfBoundsException, IOException {
         store = new StoreImpl();
         positions = new TreeMap<KeyImpl, Pair<Long, Integer>>();
-        nextAvailable = 0;
+        blocks = new ArrayList<Pair<Long, Long>>();
+        blocks.add(new Pair<Long, Long>(0L, store.getTotalSize()));
     }
 
     @Override
@@ -35,9 +37,21 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             throw new KeyAlreadyPresentException(k);
         }
         byte[] s = serialize(v);
-        positions.put(k, new Pair<Long, Integer>(nextAvailable, s.length));
-        store.write(nextAvailable, s);
-        nextAvailable += s.length;
+        long pos = -1;
+        for (int i = 0; i < blocks.size(); ++i) {
+            Pair<Long, Long> p = blocks.get(i);
+            if (p.getValue() >= s.length) {
+                pos = p.getKey();
+                if (p.getValue() == s.length)
+                    blocks.remove(i);
+                else
+                    blocks.set(i, new Pair<Long, Long>(pos + s.length, p.getValue() - s.length));
+            }
+        }
+        if (pos < 0)
+            throw new IOException("No available space in mmap file");
+        positions.put(k, new Pair<Long, Integer>(pos, s.length));
+        store.write(pos, s);
     }
 
     @Override
@@ -45,6 +59,35 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         if (!positions.containsKey(k)) {
             throw new KeyNotFoundException(k);
         }
+        Pair<Long, Integer> p = positions.get(k);
+        
+        int i;
+        for (i = 0; i < blocks.size(); ++i)
+        {
+            if (blocks.get(i).getKey() > p.getKey())
+                break;
+        }
+        Pair<Long, Long> newblock = new Pair<Long, Long>(p.getKey(), (long)p.getValue());
+        // Check if i extends some free block. This should be at position i-1
+        if (i > 0) {
+            Pair<Long, Long> prev = blocks.get(i-1);
+            if (prev.getKey() + prev.getValue() == p.getKey()) {
+                blocks.set(i-1, new Pair<Long, Long>(prev.getKey(), prev.getValue() + p.getValue()));
+            }
+            else
+                blocks.add(i, newblock);
+        }
+        else
+            blocks.add(0, newblock);
+        if (i < blocks.size() - 1) {
+            Pair<Long, Long> p2 = blocks.get(i);
+            Pair<Long, Long> nextb = blocks.get(i+1);
+            if (p2.getKey() + p2.getValue() == nextb.getKey()) {
+                blocks.set(i, new Pair<Long, Long>(p2.getKey(), p2.getValue() + nextb.getValue()));
+                blocks.remove(i+1);
+            }
+        }
+        
         positions.remove(k);
     }
 
@@ -52,6 +95,10 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     synchronized public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
             IOException {
         Pair<Long, Integer> p = positions.get(k);
+        if (p == null) {
+            System.out.println("" + positions.size());
+            System.out.println("" + blocks.size());
+        }
         ValueListImpl res = (ValueListImpl) deserialize(store.read(p.getKey(), p.getValue()));
         return res;
     }
@@ -76,16 +123,14 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         
         ArrayList<ValueListImpl> list = new ArrayList<ValueListImpl>();
         
-        for (KeyImpl k : positions.keySet()) {
-            if (k.compareTo(begin) < 0)
-                continue;
-            if (k.compareTo(end) > 0) 
-                break;
-            
+        // Use subMap. It may be faster than just iterating through everything...
+        // Unless Java is retarded. So it probably isn't :)))
+        for (KeyImpl k : positions.subMap(begin, end).keySet())
+        {
             try {
                 list.add(this.get(k));
             } catch (KeyNotFoundException e) {
-                // won't happen
+                // Will not happen
             }
         }
         

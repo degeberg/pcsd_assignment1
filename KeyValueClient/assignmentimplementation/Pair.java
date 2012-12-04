@@ -3,17 +3,16 @@ package assignmentimplementation;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for predicate complex type.
+ * <p>Java class for pair complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="predicate">
+ * &lt;complexType name="pair">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -26,11 +25,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "predicate")
-@XmlSeeAlso({
-    LengthPredicate.class
-})
-public abstract class Predicate {
+@XmlType(name = "pair")
+public class Pair {
 
 
 }

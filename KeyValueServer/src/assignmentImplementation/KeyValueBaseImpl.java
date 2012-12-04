@@ -137,8 +137,11 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         ArrayList<ValueListImpl> list = new ArrayList<ValueListImpl>();
         for (ValueListImpl v : index.scan(begin, end)) {
             if (p.evaluate(v)) {
+                System.out.println("predicate matched");
                 list.add(v);
             }
+            else
+                System.out.println("predicate failed");
         }
         return list;
     }

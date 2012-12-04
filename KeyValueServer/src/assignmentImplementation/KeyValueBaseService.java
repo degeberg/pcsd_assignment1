@@ -2,11 +2,16 @@ package assignmentImplementation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -27,6 +32,8 @@ public class KeyValueBaseService {
 	private KeyValueBaseImpl lort;
 	private IndexImpl idx;
 
+	@WebMethod
+	public void dummy(LengthPredicate p) { }
 	
     public KeyValueBaseService() throws IndexOutOfBoundsException, IOException {
     	idx = new IndexImpl();
@@ -71,24 +78,32 @@ public class KeyValueBaseService {
 
     
     @WebMethod
-    public ArrayList<ValueListImpl> scan(KeyImpl begin, KeyImpl end,
+    public ValueListImpl[] scan(KeyImpl begin, KeyImpl end,
             Predicate<ValueListImpl> p) throws IOException,
             BeginGreaterThanEndException, ServiceNotInitializedException {
-    	return (ArrayList<ValueListImpl>)lort.scan(begin, end, p);
+    	return lort.scan(begin, end, p).toArray(new ValueListImpl[]{});
     }
 
     
     @WebMethod
-    public ArrayList<ValueListImpl> atomicScan(KeyImpl begin, KeyImpl end,
+    public ValueListImpl[] atomicScan(KeyImpl begin, KeyImpl end,
             Predicate<ValueListImpl> p) throws IOException,
             BeginGreaterThanEndException, ServiceNotInitializedException {
-    	return (ArrayList<ValueListImpl>)lort.atomicScan(begin, end, p);
+    	return lort.atomicScan(begin, end, p).toArray(new ValueListImpl[] { });
     }
 
     
     @WebMethod
-    public void bulkPut(ArrayList<Pair<KeyImpl, ValueListImpl>> mappings)
-            throws IOException, ServiceNotInitializedException {
-    	lort.bulkPut(mappings);
+    public void bulkPut(BulkList bl)
+            throws IOException, ServiceNotInitializedException
+    {
+        ArrayList<Pair<KeyImpl, ValueListImpl>> al = new ArrayList<Pair<KeyImpl, ValueListImpl>>();
+        List<KeyImpl> ks = bl.getKeys();
+        List<ValueListImpl> vls = bl.getValues();
+        int n = Math.min(ks.size(), vls.size());
+        for (int i = 0; i < n; ++i)
+            al.add(new Pair<KeyImpl, ValueListImpl>(ks.get(i), vls.get(i)));
+        
+    	lort.bulkPut(al);
     }
 }

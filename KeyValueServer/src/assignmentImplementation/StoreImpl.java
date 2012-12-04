@@ -14,6 +14,11 @@ public class StoreImpl implements Store
     private RandomAccessFile raf;
     private MemoryMappedFile mmapfile;
     
+    public long getTotalSize()
+    {
+        return TOTAL_SIZE;
+    }
+    
     public StoreImpl() throws IndexOutOfBoundsException, IOException {
         raf = new RandomAccessFile("/tmp/pcsd_store", "rw");
         raf.setLength(TOTAL_SIZE);

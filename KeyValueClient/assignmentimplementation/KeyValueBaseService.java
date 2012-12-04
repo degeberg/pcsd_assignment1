@@ -31,10 +31,10 @@ public interface KeyValueBaseService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.ArrayList
+     *     returns assignmentimplementation.ValueListImplArray
+     * @throws IOException_Exception
      * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -43,7 +43,7 @@ public interface KeyValueBaseService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseService/atomicScan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseService/atomicScan/Fault/ServiceNotInitializedException")
     })
-    public ArrayList atomicScan(
+    public ValueListImplArray atomicScan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")
@@ -56,8 +56,8 @@ public interface KeyValueBaseService {
     /**
      * 
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/bulkPutRequest", output = "http://assignmentImplementation/KeyValueBaseService/bulkPutResponse", fault = {
@@ -66,15 +66,25 @@ public interface KeyValueBaseService {
     })
     public void bulkPut(
         @WebParam(name = "arg0", partName = "arg0")
-        ArrayList arg0)
+        BulkList arg0)
         throws IOException_Exception, ServiceNotInitializedException_Exception
     ;
 
     /**
      * 
      * @param arg0
-     * @throws ServiceInitializingException_Exception
+     */
+    @WebMethod
+    @Action(input = "http://assignmentImplementation/KeyValueBaseService/dummyRequest", output = "http://assignmentImplementation/KeyValueBaseService/dummyResponse")
+    public void dummy(
+        @WebParam(name = "arg0", partName = "arg0")
+        LengthPredicate arg0);
+
+    /**
+     * 
+     * @param arg0
      * @throws ServiceAlreadyInitializedException_Exception
+     * @throws ServiceInitializingException_Exception
      * @throws FileNotFoundException_Exception
      */
     @WebMethod
@@ -110,9 +120,9 @@ public interface KeyValueBaseService {
      * 
      * @param arg1
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
      * @throws KeyAlreadyPresentException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/insertRequest", output = "http://assignmentImplementation/KeyValueBaseService/insertResponse", fault = {
@@ -134,8 +144,8 @@ public interface KeyValueBaseService {
      * @return
      *     returns assignmentimplementation.ValueListImpl
      * @throws KeyNotFoundException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -154,9 +164,9 @@ public interface KeyValueBaseService {
      * 
      * @param arg1
      * @param arg0
+     * @throws IOException_Exception
      * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws IOException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseService/updateRequest", output = "http://assignmentImplementation/KeyValueBaseService/updateResponse", fault = {
@@ -178,10 +188,10 @@ public interface KeyValueBaseService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.ArrayList
+     *     returns assignmentimplementation.ValueListImplArray
+     * @throws IOException_Exception
      * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -190,7 +200,7 @@ public interface KeyValueBaseService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseService/scan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseService/scan/Fault/ServiceNotInitializedException")
     })
-    public ArrayList scan(
+    public ValueListImplArray scan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")
