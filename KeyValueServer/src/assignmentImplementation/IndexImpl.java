@@ -151,15 +151,13 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
                 try {
                     this.update(p.getKey(), p.getValue());
                 } catch (KeyNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    // Will never happen.
                 }
             } else {
                 try {
                     this.insert(p.getKey(), p.getValue());
                 } catch (KeyAlreadyPresentException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    // Will never happen
                 }
             }
         }

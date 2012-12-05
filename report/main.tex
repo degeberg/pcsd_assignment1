@@ -302,6 +302,12 @@ interface of the \mono{KeyValueBase} consistent with the assignment.
 \subsection*{Question 8}
 
 \subsection*{Question 9}
+As already noted, both methods had to be fitted heavily to work with JAX-WS.
+This means, that the interface for the end-user (not the
+\mono{KeyValueBaseImpl}) has changed a bit to allow the user to pass a
+collection over JAX-WS. Since we don't use per-key locks, \mono{atomicScan}
+simply acquires the write lock and then calls \mono{scan}. If one read fails
+the user will get an exception, and thus the entire procedure is atomic.
 
 
 \begin{thebibliography}{9}
