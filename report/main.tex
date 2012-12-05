@@ -241,8 +241,53 @@ to this memory once it has been referenced once.
 \section{Implementation}
 
 \subsection*{Question 1}
+Which RPC style to use depends a lot on what the key-value store is supposed
+to be used for. If it is to be used in potentially life critical operations
+we would need to use exactly-once or in some cases at-least once. For a simple
+web service it would probably be sufficient to use an at-most once policy.
+Then the user can handle the case of a timeout himself and some times he might
+have to resend a request if it is of high importance.
 
 \subsection*{Question 2}
+
+\begin{description}
+    \item [\mono{StoreImpl}]\ \\
+        Our Store implementation is just a wrapper on top of the provided
+        \mono{MemoryMappedFile} using a \mono{RandomAccessFile}.
+    \item [\mono{IndexImpl}]\ \\
+        Out Index implementation consists of two parts: A \mono{TreeMap} that
+        contains the position and size of each key in the store, and a list
+        of free blocks of memory in the file. This way we get a
+        \mono{malloc}-like functionality on the store, such that we can reuse
+        space when keys are removed, by adding the block back into the list,
+        possibly merging it with existing ones. All operations are simply done
+        by looking the key up in the \mono{TreeMap} and then either reading or
+        deleting the position in the store. All the operations are without any
+        form of synchronization, as we handle this in the
+        \mono{KeyValueBaseImpl}.
+    \item [\mono{KeyValueBaseImpl}]\ \\
+        The key-value implementation is really juts a glorified wrapper around
+        \mono{IndexImpl}, which also handles synchronization, by using a
+        \mono{ReentrantReadWriteLock}. We do not use per-key locks, as we like
+        the \mono{KeyValueBaseImpl} to handle locks. It would, however, be easy
+        to change this and let the Index handle a lock per key. This, does
+        however add some requirements on \mono{bulkPut} and \mono{atomicScan},
+        as these would have to acquire all locks in the beginning to ensure
+        atomicity. This could potentially incur deadlocks, unless keys are
+        acquired in a controlled fashion (ie.~increasing by keys).
+        The \mono{init} function of the class reads in the keys one by one
+        and adds them via the index. The only thing we need to consider here,
+        is that a key may span multiple lines, but since these are sorted it
+        is trivial to handle.
+\end{description}
+
+We additionally had to create a class \mono{KeyValueBaseService}, which wraps
+\mono{KeyValueBase}, to make it work with the web service and JAX-WS. This
+class encapsulates a lot of types because interfaces and collections can't be
+used with JAX-WS. Instead we use plain arrays for return types in scan
+operations and wrap the input types in our own classes. All the packing in
+and out of wrappers is done by \mono{KeyValueBaseService}, to keep the
+interface of the \mono{KeyValueBase} consistent with the assignment.
 
 \subsection*{Question 3}
 
