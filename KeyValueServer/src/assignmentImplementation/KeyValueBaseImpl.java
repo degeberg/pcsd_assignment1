@@ -40,6 +40,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             ServiceInitializingException {
         w.lock();
         if (initialized) {
+            w.unlock();
             throw new ServiceAlreadyInitializedException();
         }
 

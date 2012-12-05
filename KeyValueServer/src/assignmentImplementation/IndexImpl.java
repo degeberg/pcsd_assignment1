@@ -153,18 +153,16 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         transactionLog = new LinkedList<>();
         try {
             for (Pair<KeyImpl, ValueListImpl> p : keys) {
-                ValueListImpl old = get(p.getKey());
                 if (positions.containsKey(p.getKey())) {
+                    ValueListImpl old = get(p.getKey());
                     this.remove(p.getKey());
                     transactionLog.add(new LogEntry(OpType.DELETE, p.getKey(), old));
-                    this.insert(p.getKey(), p.getValue());
-                    transactionLog.add(new LogEntry(OpType.INSERT, p.getKey(), old));
-                } else {
-                    this.insert(p.getKey(), p.getValue());
-                    transactionLog.add(new LogEntry(OpType.INSERT, p.getKey(), old));
                 }
+                this.insert(p.getKey(), p.getValue());
+                transactionLog.add(new LogEntry(OpType.INSERT, p.getKey(), null));
             }
         } catch (Exception e) {
+            System.out.println("rolling back bulkPut");
             rollbackTransaction();
         }
     }

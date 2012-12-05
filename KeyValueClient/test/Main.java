@@ -53,12 +53,14 @@ public class Main {
         
         vl = new ValueListImpl();
         vl.getElements().add(v);
+        
+        //kv.insert(key,  vl);
 		
-		/*Thread threads[] = new Thread[50];
+		Thread threads[] = new Thread[50];
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new Client(kv, i);
 			threads[i].start();
-		}*/
+		}
 	}
 	
 	static private void testBulkPut() throws Exception
@@ -108,9 +110,6 @@ public class Main {
 		key.setKey(k);
 		
 		ValueListImpl vl = kv.read(key);
-		if (vl == null) {
-			System.err.println("FUCK");
-		}
 		for (ValueImpl v : vl.getElements()) {
 			System.out.println(v.getValue());
 		}

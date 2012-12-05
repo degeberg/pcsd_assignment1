@@ -249,6 +249,7 @@ Then the user can handle the case of a timeout himself and some times he might
 have to resend a request if it is of high importance.
 
 \subsection*{Question 2}
+The main parts of our implementation are described below:
 
 \begin{description}
     \item [\mono{StoreImpl}]\ \\
@@ -268,6 +269,7 @@ have to resend a request if it is of high importance.
     \item [\mono{KeyValueBaseImpl}]\ \\
         The key-value implementation is really juts a glorified wrapper around
         \mono{IndexImpl}, which also handles synchronization, by using a
+        \linebreak
         \mono{ReentrantReadWriteLock}. We do not use per-key locks, as we like
         the \mono{KeyValueBaseImpl} to handle locks. It would, however, be easy
         to change this and let the Index handle a lock per key. This, does
@@ -292,6 +294,25 @@ interface of the \mono{KeyValueBase} consistent with the assignment.
 \subsection*{Question 3}
 
 \subsection*{Question 4}
+The parameters are discussed in the following list. We only consider the
+parameters noted in the assignment.
+
+\begin{description}
+    \item [Number of Clients] influence the throughput greatly, as the web
+        service is able to handle concurrent requests. Note however, that it
+        might actually decrease both throughput and increase latency due to
+        the mix of operations (see below).
+    \item [The hardware] greatly influences latency, as it decides how much of
+        the memory-mapped file can remain in the main memory, and thus how
+        long it takes to read/write requests.
+    \item [The size of the dataset] influences latency in the same way as the
+        hardware does. If the dataset is huge -- less of it can be in main
+        memory, and thus response time will increase.
+    \item [Mix of operations] Because we employ CREW (concurrent read,
+        exclusive write) locking, write operations greatly increase latency
+        of read operations and decreases the throughput.
+\end{description}
+
 
 \subsection*{Question 5}
 
@@ -300,14 +321,34 @@ interface of the \mono{KeyValueBase} consistent with the assignment.
 \subsection*{Question 7}
 
 \subsection*{Question 8}
+We would definitely like to perform some tests on a computer with much
+less/more memory to see the latency de/increases we expect from the
+memory mapped file response times. The same result should be obtainable by
+using a smaller/bigger dataset.
+
+The experiment from question 5 also only uses \mono{read} operations, which
+are by far the fastest. We would like to see the effect of adding \mono{write}
+operations to the mix -- eg.~having every $n$th operation as a write for
+different $n$, to see how much concurrency we can get out of the reads while
+they have to wait once in a while. This should decrease throughput, and
+increase the latency of \emph{some} of the read operations.
 
 \subsection*{Question 9}
 As already noted, both methods had to be fitted heavily to work with JAX-WS.
 This means, that the interface for the end-user (not the
 \mono{KeyValueBaseImpl}) has changed a bit to allow the user to pass a
 collection over JAX-WS. Since we don't use per-key locks, \mono{atomicScan}
-simply acquires the write lock and then calls \mono{scan}. If one read fails
+simply acquires the read lock and then calls \mono{scan}. If one read fails
 the user will get an exception, and thus the entire procedure is atomic.
+
+Our \mono{bulkPut} is implemented by acquiring the write lock and then
+inserting or updating the entries. While doing so, it keeps a log of all the
+changes it has made, and tries to restore these if an update fails. This
+almost ensures atomicity, but has a few flaws. First of all, the log is kept
+in memory, so if one tries to update the entire store, the log will be too
+big, and the system is likely to crash. Also, if one of the rollback writes
+fail, we do nothing, as this is a slippery slope. In the general case it
+should work well, though.
 
 
 \begin{thebibliography}{9}
