@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -21,12 +22,14 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     private StoreImpl store;
     private TreeMap<KeyImpl, Pair<Long, Integer>> positions; // Key -> (Position, Length)
     private ArrayList<Pair<Long, Long>> blocks;
+    private LinkedList<LogEntry> transactionLog;
     
     public IndexImpl() throws IndexOutOfBoundsException, IOException {
         store = new StoreImpl();
-        positions = new TreeMap<KeyImpl, Pair<Long, Integer>>();
-        blocks = new ArrayList<Pair<Long, Long>>();
-        blocks.add(new Pair<Long, Long>(0L, store.getTotalSize()));
+        positions = new TreeMap<>();
+        blocks = new ArrayList<>();
+        blocks.add(new Pair<>(0L, store.getTotalSize()));
+        transactionLog = new LinkedList<>();
     }
 
     @Override
@@ -44,12 +47,12 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
                 if (p.getValue() == s.length)
                     blocks.remove(i);
                 else
-                    blocks.set(i, new Pair<Long, Long>(pos + s.length, p.getValue() - s.length));
+                    blocks.set(i, new Pair<>(pos + s.length, p.getValue() - s.length));
             }
         }
         if (pos < 0)
             throw new IOException("No available space in mmap file");
-        positions.put(k, new Pair<Long, Integer>(pos, s.length));
+        positions.put(k, new Pair<>(pos, s.length));
         store.write(pos, s);
     }
 
@@ -66,12 +69,12 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             if (blocks.get(i).getKey() > p.getKey())
                 break;
         }
-        Pair<Long, Long> newblock = new Pair<Long, Long>(p.getKey(), (long)p.getValue());
+        Pair<Long, Long> newblock = new Pair<>(p.getKey(), (long)p.getValue());
         // Check if i extends some free block. This should be at position i-1
         if (i > 0) {
             Pair<Long, Long> prev = blocks.get(i-1);
             if (prev.getKey() + prev.getValue() == p.getKey()) {
-                blocks.set(i-1, new Pair<Long, Long>(prev.getKey(), prev.getValue() + p.getValue()));
+                blocks.set(i-1, new Pair<>(prev.getKey(), prev.getValue() + p.getValue()));
             }
             else
                 blocks.add(i, newblock);
@@ -82,7 +85,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             Pair<Long, Long> p2 = blocks.get(i);
             Pair<Long, Long> nextb = blocks.get(i+1);
             if (p2.getKey() + p2.getValue() == nextb.getKey()) {
-                blocks.set(i, new Pair<Long, Long>(p2.getKey(), p2.getValue() + nextb.getValue()));
+                blocks.set(i, new Pair<>(p2.getKey(), p2.getValue() + nextb.getValue()));
                 blocks.remove(i+1);
             }
         }
@@ -94,10 +97,6 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
             IOException {
         Pair<Long, Integer> p = positions.get(k);
-        if (p == null) {
-            System.out.println("" + positions.size());
-            System.out.println("" + blocks.size());
-        }
         ValueListImpl res = (ValueListImpl) deserialize(store.read(p.getKey(), p.getValue()));
         return res;
     }
@@ -105,11 +104,15 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     @Override
     public void update(KeyImpl k, ValueListImpl v) throws KeyNotFoundException,
             IOException {
-        remove(k);
+        transactionLog = new LinkedList<>();
         try {
+            ValueListImpl old = get(k);
+            remove(k);
+            transactionLog.add(new LogEntry(OpType.DELETE, k, old));
             insert(k, v);
-        } catch (KeyAlreadyPresentException e) {
-            // cannot happen
+            transactionLog.add(new LogEntry(OpType.INSERT, k, old));
+        } catch (Exception e) {
+            rollbackTransaction();
         }
     }
 
@@ -146,19 +149,43 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     @Override
     public void bulkPut(List<Pair<KeyImpl, ValueListImpl>> keys)
             throws IOException {
-        for (Pair<KeyImpl, ValueListImpl> p : keys) {
-            if (positions.containsKey(p.getKey())) {
-                try {
-                    this.update(p.getKey(), p.getValue());
-                } catch (KeyNotFoundException e) {
-                    // Will never happen.
-                }
-            } else {
-                try {
+        
+        transactionLog = new LinkedList<>();
+        try {
+            for (Pair<KeyImpl, ValueListImpl> p : keys) {
+                ValueListImpl old = get(p.getKey());
+                if (positions.containsKey(p.getKey())) {
+                    this.remove(p.getKey());
+                    transactionLog.add(new LogEntry(OpType.DELETE, p.getKey(), old));
                     this.insert(p.getKey(), p.getValue());
-                } catch (KeyAlreadyPresentException e) {
-                    // Will never happen
+                    transactionLog.add(new LogEntry(OpType.INSERT, p.getKey(), old));
+                } else {
+                    this.insert(p.getKey(), p.getValue());
+                    transactionLog.add(new LogEntry(OpType.INSERT, p.getKey(), old));
                 }
+            }
+        } catch (Exception e) {
+            rollbackTransaction();
+        }
+    }
+    
+    /**
+     * If this fails, we're just fucked...
+     */
+    private void rollbackTransaction() throws IOException {
+        LogEntry l;
+        while ((l = transactionLog.pollLast()) != null) {
+            try {
+                switch (l.getType()) {
+                    case DELETE:
+                        insert(l.getKey(), l.getValue());
+                        break;
+                    case INSERT:
+                        remove(l.getKey());
+                        break;
+                }
+            } catch (KeyNotFoundException|KeyAlreadyPresentException e) {
+                // shouldn't happen
             }
         }
     }
@@ -185,6 +212,35 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             out.close();
         }
         return b.toByteArray();
+    }
+    
+    private class LogEntry {
+        
+        private OpType type;
+        private KeyImpl key;
+        private ValueListImpl value;
+        
+        public LogEntry(OpType type, KeyImpl key, ValueListImpl value) {
+            this.type = type;
+            this.key = key;
+            this.value = value;
+        }
+
+        public OpType getType() {
+            return type;
+        }
+
+        public ValueListImpl getValue() {
+            return value;
+        }
+        
+        public KeyImpl getKey() {
+            return key;
+        }
+    }
+
+    private enum OpType {
+        DELETE, INSERT
     }
 
 }
