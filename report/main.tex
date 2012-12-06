@@ -293,6 +293,16 @@ interface of the \mono{KeyValueBase} consistent with the assignment.
 
 \subsection*{Question 3}
 
+We have created a class \mono{test.Main} that tests the individual procedures
+in our key-value store. It first initializes the service using a data file.
+Using this we can test \mono{read} by reading keys we know already exist. We
+can then \mono{insert} and \mono{update} new keys and read them similarly to
+ensure that we get the expected values back. \mono{bulkPut} and \mono{scan} are
+tested in a similar fashion. Concurrency is tested by starting multiple new
+threads and having them \mono{update} and \mono{read} values with artificial
+waiting times between 100~ms and 1500~ms induced by calling Java's
+\mono{Thread.sleep}.
+
 \subsection*{Question 4}
 The parameters are discussed in the following list. We only consider the
 parameters noted in the assignment.
