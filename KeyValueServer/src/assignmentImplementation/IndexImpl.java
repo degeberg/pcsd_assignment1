@@ -23,6 +23,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     private TreeMap<KeyImpl, Pair<Long, Integer>> positions; // Key -> (Position, Length)
     private ArrayList<Pair<Long, Long>> blocks;
     private LinkedList<LogEntry> transactionLog;
+    private ValueSerializerImpl ser;
     
     public IndexImpl() throws IndexOutOfBoundsException, IOException {
         store = new StoreImpl();
@@ -30,6 +31,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         blocks = new ArrayList<>();
         blocks.add(new Pair<>(0L, store.getTotalSize()));
         transactionLog = new LinkedList<>();
+        ser = new ValueSerializerImpl();
     }
 
     @Override
@@ -38,7 +40,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         if (positions.containsKey(k)) {
             throw new KeyAlreadyPresentException(k);
         }
-        byte[] s = serialize(v);
+        byte[] s = ser.toByteArray(v);
         long pos = -1;
         for (int i = 0; i < blocks.size(); ++i) {
             Pair<Long, Long> p = blocks.get(i);
@@ -97,7 +99,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
             IOException {
         Pair<Long, Integer> p = positions.get(k);
-        ValueListImpl res = (ValueListImpl) deserialize(store.read(p.getKey(), p.getValue()));
+        ValueListImpl res = ser.fromByteArray(store.read(p.getKey(), p.getValue()));
         return res;
     }
 
@@ -187,7 +189,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             }
         }
     }
-    
+    /*
     private Object deserialize(byte[] buf) throws IOException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buf));
         try {
@@ -211,7 +213,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
         }
         return b.toByteArray();
     }
-    
+    */
     private class LogEntry {
         
         private OpType type;
