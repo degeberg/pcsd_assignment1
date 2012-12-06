@@ -283,6 +283,11 @@ The main parts of our implementation are described below:
         is trivial to handle.
 \end{description}
 
+We took the decision to implement \mono{ValueImpl} using integers to make it
+work with the web service, which cannot handle generic types. This also
+simplifies many of our other classes. Our serialization is done by simply
+storing each integer as four bytes, which makes the whole process very easy.
+
 We additionally had to create a class \mono{KeyValueBaseService}, which wraps
 \mono{KeyValueBase}, to make it work with the web service and JAX-WS. This
 class encapsulates a lot of types because interfaces and collections can't be
