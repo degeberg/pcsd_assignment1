@@ -56,7 +56,7 @@ public class Main {
         
         //kv.insert(key,  vl);
 		
-		Client2 threads[] = new Client2[50];
+		Client2 threads[] = new Client2[50000];
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new Client2(kv);
 		}
