@@ -56,11 +56,28 @@ public class Main {
         
         //kv.insert(key,  vl);
 		
-		Thread threads[] = new Thread[50];
+		Client2 threads[] = new Client2[50];
 		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Client(kv, i);
+			threads[i] = new Client2(kv);
+		}
+		long startTime = System.nanoTime();
+		for (int i = 0; i < threads.length; ++i) {
 			threads[i].start();
 		}
+		for (int i = 0; i < threads.length; ++i) {
+			threads[i].join();
+		}
+		long endTime = System.nanoTime();
+		long duration = endTime - startTime;
+		System.out.println("Elapsed time to process all threads: " + duration + " nanoseconds.");
+		long avgDelay = 0;
+		int totSize = 0;
+		for (int i = 0; i < threads.length; ++i) {
+			avgDelay += threads[i].getDuration();
+			totSize += threads[i].getSize();
+		}
+		avgDelay /= threads.length;
+		System.out.println("Transferred a total of " + totSize + " values with average request time of " + avgDelay + " ns.");
 	}
 	
 	static private void testBulkPut() throws Exception

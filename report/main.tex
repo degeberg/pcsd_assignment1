@@ -319,7 +319,8 @@ parameters noted in the assignment.
         the mix of operations (see below).
     \item [The hardware] greatly influences latency, as it decides how much of
         the memory-mapped file can remain in the main memory, and thus how
-        long it takes to read/write requests.
+        long it takes to read/write requests. Also, more processors will
+        allow for more concurrent requests, thus increasing the throughput.
     \item [The size of the dataset] influences latency in the same way as the
         hardware does. If the dataset is huge -- less of it can be in main
         memory, and thus response time will increase.
@@ -330,10 +331,18 @@ parameters noted in the assignment.
 
 
 \subsection*{Question 5}
+As mentioned in the previous question, we expect the number of clients to
+increase the throughput, as long as the hardware has cores/hardware threads
+to support this. As such, we expect the throughput to increase almost linearly
+until there are as many clients as the service can execute simultaneously
+threads. The latency shouldn't be effected much unless the clients are
+performing a lot of writes, which will block out other requests.
 
 \subsection*{Question 6}
 
+
 \subsection*{Question 7}
+
 
 \subsection*{Question 8}
 We would definitely like to perform some tests on a computer with much

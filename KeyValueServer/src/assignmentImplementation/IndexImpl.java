@@ -99,6 +99,8 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     public ValueListImpl get(KeyImpl k) throws KeyNotFoundException,
             IOException {
         Pair<Long, Integer> p = positions.get(k);
+        if (p == null)
+            throw new KeyNotFoundException(k);
         ValueListImpl res = ser.fromByteArray(store.read(p.getKey(), p.getValue()));
         return res;
     }
