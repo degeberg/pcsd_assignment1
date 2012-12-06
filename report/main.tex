@@ -83,10 +83,10 @@
 \subsection*{Question 1}
 Our scheme is very simple: First calculate which machine to contact, and what
 the memory address is on that machine. Second contact the machine over ethernet
-(ie.~some local LAN).
+(i.e.\ some local LAN).
 
 We make the assumption, that we are aware of how much memory each individual
-machine has, when creating the scheme. Two cases then present themselves:
+machine has when creating the scheme. Two cases then present themselves:
 \begin{enumerate}
     \item Each machine has the same amount of memory it is very easy to
         calculate the machine and address using $a\mod m$ and
@@ -95,7 +95,7 @@ machine has, when creating the scheme. Two cases then present themselves:
     \item If this is not the case, it is slightly more complicated. One way to
         handle this is to keep an array in the translation code, which contains
         the accumulated sizes, and then doing a binary search on this array to
-        find the machine. Eg.~if machine $0$ and $1$ have $2$ GB of memory and
+        find the machine. E.g.\ if machine $0$ and $1$ have $2$ GB of memory and
         machine $2$ and $3$ have $4$ GB of memory, the array would contain
         the values $[0, 2\cdot 10^9, 4\cdot 10^9, 8\cdot 10^9]$. We then simply
         do a binary search for the biggest number in the array, that is smaller
@@ -106,12 +106,12 @@ machine has, when creating the scheme. Two cases then present themselves:
 \end{enumerate}
 
 To have the API look as similar to the one for local memory, we limit
-$\proc{READ}$ and $\proc{WRITE}$ to only accessing one byte at a time. See the
+$\proc{Read}$ and $\proc{Write}$ to only accessing one byte at a time. See the
 pseudocode below. The pseudocode is for the one-size memory version, but the
 other one is almost just as simple. Assume $m$ to be some global constant.
 
 \begin{codebox}
-    \Procname{$\proc{READ}(a, p)$}
+    \Procname{$\proc{Read}(a, p)$}
     \li $d\gets a\mod m$
     \li $a2\gets \lfloor a/m \rfloor$
     \li $p\gets\proc{Send}(d, \const{read}, a2)$
@@ -137,16 +137,16 @@ regular main memory as possible.
 
 We have filled the table using values from \cite{WikiSSDHDD}, \cite{WikiDRAM}
 and \cite{PowerConsump}. Prices and capacities have been found using
-\url{www.edbpriser.dk}. Not that access time is for everything - this
+\url{www.edbpriser.dk}. Note that access time is for everything -- this
 includes rotational latency and seektime for HDDs. We have not split into read
-and write, but rather split into Access time and transfer rate, as we
-believe this to be more relevant. For reliability we considered how long a
-unit is expected to last. For instance, the moving parts of the HDD is
-subject to wear and tear and thus will wear down. The transfer rates have
-not been normalized, but are with different units -- We assume that
-$1 Word = 4 Bytes = 32 bits$. For sizes we have listed commonly available
-size only. For example, even though SSDs of more than $2$ TB are available,
-these are not common at all.
+and write, but rather split into Access time and transfer rate, as we believe
+this to be more relevant. For reliability we considered how long a unit is
+expected to last. For instance, the moving parts of the HDD is subject to wear
+and tear and thus will wear down. The transfer rates have not been normalized,
+but are with different units -- we assume that $1\text{ Word} = 4\text{ Bytes}
+= 32\text{ bits}$. For sizes we have listed commonly available size only. For
+example, even though SSDs of more than $2$ TB are available, these are not
+common at all.
 
 \begin{table}[htbp]
     \centering
@@ -189,21 +189,21 @@ to acquire locks to access shared resources, which increases the latency of
 the individual request.
 
 \item [b)]\ \\
-Batching and Dallying are two entirely different things. The only thing they
+Batching and dallying are two entirely different things. The only thing they
 have in common is that they can be used to fight bottlenecks. Batching is when
 you group several requests together before sending them, to avoid the setup
 overhead. Dallying is when you don't send a request at all because it might
 not be needed.
 
 An example of batching could be retrieving multiple records from a database
-at once, by eg.~performing an SQL select of all items with id between $10$ and
+at once, by e.g.\ performing an SQL select of all items with id between $10$ and
 $20$, rather than retrieving one record at a time.
 An example of dallying could be in cache, where a memory write is not written
 to main memory immediately when issued, but is delayed until the cache line
 has to be replaced.
 \item [c)]\ \\
 Caching is clearly an example of fast path optimization. When working with
-memory it is very common to work with the same area a lot, eg.~reading a value
+memory it is very common to work with the same area a lot, e.g.\ reading a value
 adding something to it, and storing it again or searching through an array.
 A cache optimizes for this, and thus the common case by providing a fast path
 to this memory once it has been referenced once.
@@ -225,7 +225,7 @@ to this memory once it has been referenced once.
     optimizations before doing this.
 
     By performing say, $2^{30}$ reads we can see how long time it takes to do
-    this, and obtain how many seconds are needed to read one GB. This does,
+    this, and obtain how many seconds are needed to read one GB\@. This does,
     however not take advantage of any parallelism in the cache, so reading
     words or dwords may be the better option for real effective bandwidth.
 
@@ -283,7 +283,7 @@ The main parts of our implementation are described below:
         however add some requirements on \mono{bulkPut} and \mono{atomicScan},
         as these would have to acquire all locks in the beginning to ensure
         atomicity. This could potentially incur deadlocks, unless keys are
-        acquired in a controlled fashion (ie.~increasing by keys).
+        acquired in a controlled fashion (i.e.\ increasing by keys).
         The \mono{init} function of the class reads in the keys one by one
         and adds them via the index. The only thing we need to consider here,
         is that a key may span multiple lines, but since these are sorted it
@@ -380,22 +380,22 @@ The Zipf distribution samples were generated by the Apache Common Math library.
 
 \subsection*{Question 8}
 We would definitely like to perform some tests on a computer with much
-less/more memory to see the latency de/increases we expect from the
+less/more memory to see the latency de-/increases we expect from the
 memory mapped file response times. The same result should be obtainable by
 using a smaller/bigger dataset.
 
 The experiment from question 5 also only uses \mono{read} operations, which
 are by far the fastest. We would like to see the effect of adding \mono{write}
-operations to the mix -- eg.~having every $n$th operation as a write for
+operations to the mix -- e.g.\ having every $n$th operation as a write for
 different $n$, to see how much concurrency we can get out of the reads while
 they have to wait once in a while. This should decrease throughput, and
 increase the latency of \emph{some} of the read operations.
 
 \subsection*{Question 9}
-As already noted, both methods had to be fitted heavily to work with JAX-WS.
+As already noted, both methods had to be fitted heavily to work with JAX-WS\@.
 This means, that the interface for the end-user (not the
 \mono{KeyValueBaseImpl}) has changed a bit to allow the user to pass a
-collection over JAX-WS. Since we don't use per-key locks, \mono{atomicScan}
+collection over JAX-WS\@. Since we don't use per-key locks, \mono{atomicScan}
 simply acquires the read lock and then calls \mono{scan}. If one read fails
 the user will get an exception, and thus the entire procedure is atomic.
 
