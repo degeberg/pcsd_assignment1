@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
@@ -22,25 +22,21 @@ import keyValueBaseInterfaces.Predicate;
 public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     private boolean initialized;
     private IndexImpl index;
-    private ReentrantReadWriteLock rwl;
-    private Lock r;
-    private Lock w;
+    
+    private HashMap<KeyImpl, ReentrantReadWriteLock> lockTable;
 
     public KeyValueBaseImpl(IndexImpl index) {
         initialized = false;
         this.index = index;
-        rwl = new ReentrantReadWriteLock();
-        r = rwl.readLock();
-        w = rwl.writeLock();
+        
+        lockTable = new HashMap<>();
     }
 
     @Override
     public void init(String serverFilename)
             throws ServiceAlreadyInitializedException,
             ServiceInitializingException {
-        w.lock();
         if (initialized) {
-            w.unlock();
             throw new ServiceAlreadyInitializedException();
         }
 
@@ -92,7 +88,6 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         }
 
         initialized = true;
-        w.unlock();
     }
 
     @Override
@@ -102,11 +97,11 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
 
-        r.lock();
+        lockRead(k);
         try {
             return index.get(k);
         } finally {
-            r.unlock();
+            unlock(k);
         }
     }
 
@@ -118,11 +113,11 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
 
-        w.lock();
+        lockWrite(k);
         try {
             index.insert(k, v);
         } finally {
-            w.unlock();
+            unlock(k);
         }
     }
 
@@ -134,11 +129,11 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
 
-        w.lock();
+        lockWrite(k);
         try {
             index.update(k, newV);
         } finally {
-            w.unlock();
+            unlock(k);
         }
     }
 
@@ -149,11 +144,11 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
 
-        w.lock();
+        lockWrite(k);
         try {
             index.remove(k);
         } finally {
-            w.unlock();
+            unlock(k);
         }
     }
 
@@ -185,11 +180,19 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
             throw new ServiceNotInitializedException();
         }
         
-        r.lock();
+        List<KeyImpl> ks = KeyImpl.getInterval(begin, end);
+        
+        while (!lockReadMany(ks)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // Doesn't matter...
+            }
+        }
         try {
             return scan(begin, end, p);
         } finally {
-            r.unlock();
+            unlock(ks);
         }
     }
 
@@ -199,13 +202,86 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         if (!initialized) {
             throw new ServiceNotInitializedException();
         }
+        
+        ArrayList<KeyImpl> ks = new ArrayList<>();
+        for (Pair<KeyImpl, ValueListImpl> p : mappings) {
+            ks.add(p.getKey());
+        }
 
-        w.lock();
+        while (!lockWriteMany(ks)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // Doesn't matter...
+            }
+        }
         try {
             index.bulkPut(mappings);
         } finally {
-            w.unlock();
+            unlock(ks);
         }
+    }
+    
+    synchronized private void lockRead(KeyImpl k) {
+        ReentrantReadWriteLock l = getLock(k);
+        l.readLock().lock();
+    }
+    
+    private boolean lockReadMany(List<KeyImpl> ks) {
+        ArrayList<KeyImpl> locked = new ArrayList<>();
+        for (KeyImpl k : ks) {
+            if (!getLock(k).readLock().tryLock()) {
+                unlock(locked);
+                return false;
+            } else {
+                locked.add(k);
+            }
+        }
+        return true;
+    }
+    
+    synchronized private void lockWrite(KeyImpl k) {
+        ReentrantReadWriteLock l = getLock(k);
+        l.writeLock().lock();
+        notifyAll();
+    }
+    
+    private boolean lockWriteMany(List<KeyImpl> ks) {
+        ArrayList<KeyImpl> locked = new ArrayList<>();
+        for (KeyImpl k : ks) {
+            if (!getLock(k).writeLock().tryLock()) {
+                unlock(locked);
+                return false;
+            } else {
+                locked.add(k);
+            }
+        }
+        return true;
+    }
+    
+    synchronized private void unlock(KeyImpl k) {
+        ReentrantReadWriteLock l = getLock(k);
+        if (l.isWriteLocked()) {
+            l.writeLock().unlock();
+        } else {
+            l.readLock().unlock();
+        }
+    }
+    
+    private void unlock(List<KeyImpl> ks) {
+        for (KeyImpl k : ks) {
+            unlock(k);
+        }
+    }
+    
+    synchronized private ReentrantReadWriteLock getLock(KeyImpl k) {
+        ReentrantReadWriteLock l;
+        l = lockTable.get(k);
+        if (l == null) {
+            l = new ReentrantReadWriteLock();
+            lockTable.put(k, l);
+        }
+        return l;
     }
 
 }

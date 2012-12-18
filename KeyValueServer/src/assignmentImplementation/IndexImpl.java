@@ -1,11 +1,6 @@
 package assignmentImplementation;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,31 +186,7 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
             }
         }
     }
-    /*
-    private Object deserialize(byte[] buf) throws IOException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buf));
-        try {
-            return in.readObject();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        } finally {
-            in.close();
-        }
-    }
-    
-    private byte[] serialize(Serializable o) throws IOException {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(b);
-        try {
-            out.writeObject(o);
-        } finally {
-            out.close();
-        }
-        return b.toByteArray();
-    }
-    */
+
     private class LogEntry {
         
         private OpType type;
