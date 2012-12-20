@@ -299,15 +299,17 @@ The main parts of our implementation are described below:
         \mono{KeyValueBaseImpl}.
     \item [\mono{KeyValueBaseImpl}]\ \\
         The key-value implementation is really juts a glorified wrapper around
-        \mono{IndexImpl}, which also handles synchronization, by using a
-        \linebreak
-        \mono{ReentrantReadWriteLock}. We do not use per-key locks, as we like
-        the \mono{KeyValueBaseImpl} to handle locks. It would, however, be easy
-        to change this and let the Index handle a lock per key. This, does
-        however add some requirements on \mono{bulkPut} and \mono{atomicScan},
-        as these would have to acquire all locks in the beginning to ensure
-        atomicity. This could potentially incur deadlocks, unless keys are
-        acquired in a controlled fashion (i.e.\ increasing by keys).
+        \mono{IndexImpl}, which also handles synchronization by keeping a
+        \mono{HashMap} from \mono{KeyImpl}s to \mono{ReentrantReadWriteLock}s.
+        Each key is assigned a lock, and read/write operations need to acquire
+        the read/write lock before performing the operation. Acquiring a single
+        lock is an atomic operation. Synchronization is trivial in all cases
+        except \mono{atomicScan} and \mono{bulkPut} as they need to acquire
+        multiple locks. This is handled using condition variables. Unless we
+        are able to acquire all the locks we want immediately, we release our
+        partial lock set and wait. Each time any lock is released, we signal
+        all waiting threads to try again.
+
         The \mono{init} function of the class reads in the keys one by one
         and adds them via the index. The only thing we need to consider here,
         is that a key may span multiple lines, but since these are sorted it
