@@ -105,6 +105,14 @@ machine has when creating the scheme. Two cases then present themselves:
         factor.
 \end{enumerate}
 
+If a machine is down, the request to it will time out, and we have to report an
+error to the user. This is also the case if the memory read/write on the actual
+PC fails (inaccessible memory region, bad sector, etc.) In the last case, the
+target PC should fail (segmentation fault, etc.) or the error is not detectable
+without some sort of redundancy double-check. Thus we should be able to detect
+errors with a time-out in the request. We do not report here, how to add
+redundancy against data-loss or to ensure data integrity.
+
 To have the API look as similar to the one for local memory, we limit
 $\proc{Read}$ and $\proc{Write}$ to only accessing one byte at a time. See the
 pseudocode below. The pseudocode is for the one-size memory version, but the
@@ -115,6 +123,10 @@ other one is almost just as simple. Assume $m$ to be some global constant.
     \li $d\gets a\mod m$
     \li $a2\gets \lfloor a/m \rfloor$
     \li $p\gets\proc{Send}(d, \const{read}, a2)$
+    \li \If $p \isequal \const{Timeout}$
+    \li \Then
+            $\proc{Report-Error}$
+        \End
 \end{codebox}
 
 Here $\proc{Send}$ is some generic network procedure, that sends the command
@@ -174,15 +186,25 @@ setting, where the ethernet connection is very fast. In this case HDDs would
 certainly incur a too big latency overhead to be practical. Also, since writes
 to disks like HDDs and SSDs are page based we cannot ensure the atomicity we
 wish to keep our abstraction as close to working with normal memory as we can.
-Thus we would only use RAM.
+Thus we would only use RAM. Note also, that if we require huge storage, then
+cost may be a big factor. This is both cost per storage, as well as power
+consumption. If we use RAM, then this will quickly become too expensive, also
+note, that most computers do not support huge amounts of RAM. Reliability of
+harddisks may be a problem if huge storage is needed. Companies like Google do
+this, but they have many harddisk failures per
+day\footnote{\url{research.google.com/archive/disk_failures.pdf}}. Thus
+SSDs may be what we want, if we don't suppor tany form of redundancy.
 
 
 \subsection*{Question 3}
 \begin{description}
 \item [a)]\ \\
-Concurrency does not have a big impact on latency. This is because each
-instruction is not performed faster, but rather several instructions are
-performed at once. This gives bigger throughput, but not better latency. In
+Concurrency effects latency in some cases. If a request is waiting for a
+resource (like disk write), then processing the next request concurrently
+will get it done faster, because it doesn't have to wait for the first
+request. In general, though, concurrency does not lead to instructions
+being performed faster, but rather more can be performed at a time.
+This gives bigger throughput, but not better latency. In
 fact the overhead incurred by the concurrent requests is more likely to have
 a slight negative effect due to more bookkeeping. Also some requests may need
 to acquire locks to access shared resources, which increases the latency of
@@ -193,7 +215,8 @@ Batching and dallying are two entirely different things. The only thing they
 have in common is that they can be used to fight bottlenecks. Batching is when
 you group several requests together before sending them, to avoid the setup
 overhead. Dallying is when you don't send a request at all because it might
-not be needed.
+not be needed. We can also use Dallying to group up requests for batching.
+This may be useful in some cases.
 
 An example of batching could be retrieving multiple records from a database
 at once, by e.g.\ performing an SQL select of all items with id between $10$ and
@@ -253,7 +276,8 @@ to be used for. If it is to be used in potentially life critical operations
 we would need to use exactly-once or in some cases at-least once. For a simple
 web service it would probably be sufficient to use an at-most once policy.
 Then the user can handle the case of a timeout himself and some times he might
-have to resend a request if it is of high importance.
+have to resend a request if it is of high importance. For our implementation we
+use the at-most-once RPC semantics.
 
 \subsection*{Question 2}
 The main parts of our implementation are described below:
