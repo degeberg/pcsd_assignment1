@@ -36,5 +36,11 @@ public class StoreImpl implements Store
     public void write(Long position, byte[] value) {
         mmapfile.put(value, position);
     }
+
+    @Override
+    public Long getSize() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }
