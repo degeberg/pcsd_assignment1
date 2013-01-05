@@ -3,7 +3,6 @@ package assignmentImplementation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -16,14 +15,11 @@ import keyValueBaseInterfaces.Configuration;
 import keyValueBaseInterfaces.KeyValueBaseProxy;
 import keyValueBaseInterfaces.Pair;
 import keyValueBaseInterfaces.Predicate;
+import keyValueBaseInterfaces.TimestampLog;
 
 public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueListImpl> {
     
-    private ConcurrentHashMap<KeyImpl, Integer> keyLsn;
-    
-    public KeyValueBaseProxyImpl() {
-        keyLsn = new ConcurrentHashMap<>();
-    }
+    private TimestampLog lastLSN;
 
 	@Override
 	public void init(String serverFilename)
