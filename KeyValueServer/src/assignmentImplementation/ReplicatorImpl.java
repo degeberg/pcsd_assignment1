@@ -11,7 +11,7 @@ import keyValueBaseInterfaces.Replicator;
  * or lint to your last assignment's implementation in your own way.
  */
 
-public class ReplicatorImpl implements Replicator {
+public class ReplicatorImpl extends Thread implements Replicator {
 
 	@Override
 	public Future<?> makeStable(LogRecord record) {

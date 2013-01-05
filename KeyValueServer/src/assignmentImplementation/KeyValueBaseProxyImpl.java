@@ -3,6 +3,7 @@ package assignmentImplementation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import keyValueBaseExceptions.BeginGreaterThanEndException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
@@ -17,6 +18,12 @@ import keyValueBaseInterfaces.Pair;
 import keyValueBaseInterfaces.Predicate;
 
 public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueListImpl> {
+    
+    private ConcurrentHashMap<KeyImpl, Integer> keyLsn;
+    
+    public KeyValueBaseProxyImpl() {
+        keyLsn = new ConcurrentHashMap<>();
+    }
 
 	@Override
 	public void init(String serverFilename)
@@ -82,7 +89,6 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
 	@Override
 	public void config(Configuration conf)
 			throws ServiceAlreadyConfiguredException {
-		// TODO Auto-generated method stub
 		
 	}
 
