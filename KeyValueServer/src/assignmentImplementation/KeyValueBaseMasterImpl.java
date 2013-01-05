@@ -1,6 +1,9 @@
 package assignmentImplementation;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -12,6 +15,7 @@ import keyValueBaseInterfaces.Configuration;
 import keyValueBaseInterfaces.KeyValueBaseMaster;
 import keyValueBaseInterfaces.LogRecord;
 import keyValueBaseInterfaces.Pair;
+import clientClasses.KeyValueBaseSlaveServiceService;
 
 public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements KeyValueBaseMaster<KeyImpl,ValueListImpl> {
     private ReplicatorImpl replicator;
@@ -73,7 +77,15 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 	@Override
 	public void config(Configuration conf)
 			throws ServiceAlreadyConfiguredException {
-		// TODO Auto-generated method stub
+	    ArrayList<KeyValueBaseSlaveServiceService> slaves = new ArrayList<>();
+	    try {
+        	for (String slaveUrl : conf.slaves) {
+                slaves.add(new KeyValueBaseSlaveServiceService(new URL(slaveUrl)));
+        	}
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 }

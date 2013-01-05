@@ -8,7 +8,6 @@ package keyValueBaseInterfaces;
  * replicas.
  */
 public class Configuration {
-	public String master = "http://localhost:12345/keyValueBase/master?wsdl";
-	public String[] slaves = {	"http://localhost:12345/keyValueBase/slave1?wsdl",
-								"http://localhost:12345/keyValueBase/slave2?wsdl" };
+	public String master = "http://localhost:8080/keyvalue/kvmaster?wsdl";
+	public String[] slaves = { "http://localhost:8080/keyvalue/kvslave1?wsdl" };
 }
