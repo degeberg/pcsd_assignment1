@@ -1,9 +1,14 @@
 package assignmentImplementation;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import keyValueBaseInterfaces.LogRecord;
 import keyValueBaseInterfaces.Replicator;
+import clientClasses.KeyValueBaseSlaveServiceService;
 
 /**
  * This class extends your MyLogger from assignment 2 to use its
@@ -11,18 +16,48 @@ import keyValueBaseInterfaces.Replicator;
  * or lint to your last assignment's implementation in your own way.
  */
 
-public class ReplicatorImpl implements Replicator {
+public class ReplicatorImpl extends Thread implements Replicator {
+    
+    private ArrayList<KeyValueBaseSlaveServiceService> slaves;
+    private ExecutorService executor;
+    
+    public ReplicatorImpl() {
+        slaves = new ArrayList<>();
+    }
+    
+    public void setSlaves(ArrayList<KeyValueBaseSlaveServiceService> slaves) {
+        this.slaves = slaves;
+    }
 
 	@Override
-	public Future<?> makeStable(LogRecord record) {
-		// TODO Auto-generated method stub
-		return null;
+	public Future<?> makeStable(final LogRecord record) {
+        Future<?> f = executor.submit(new Callable<Void>() {
+            public Void call() throws Exception {
+                clientClasses.LogRecord log = new clientClasses.LogRecord();
+                log.setClassName(record.getSrcClass());
+                clientClasses.TimestampLog lsn = new clientClasses.TimestampLog();
+                lsn.setInd(record.getLSN().toLong());
+                log.setLSN(lsn);
+                log.setMethodName(record.getMethodName());
+                log.setNumberParam(record.getNumParams());
+                log.getParams().add(record.getParams());
+                
+                for (KeyValueBaseSlaveServiceService slave : slaves) {
+                    try {
+                        slave.getKeyValueBaseSlaveServicePort().logApply(log);
+                    } catch (Exception e) {
+                        slaves.remove(slave);
+                    }
+                }
+                return null;
+            }
+        });
+		return f;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+        executor = Executors.newFixedThreadPool(1);
 	}
 
 }

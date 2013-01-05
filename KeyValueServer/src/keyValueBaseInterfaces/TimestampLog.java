@@ -2,12 +2,17 @@ package keyValueBaseInterfaces;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * This class is used in LogRecord, and it represents
  * the LSN of a record.
  */
+@XmlRootElement
 public class TimestampLog implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@XmlElement
 	private Long ind;
 
 	public TimestampLog(Long ind) {
@@ -37,6 +42,10 @@ public class TimestampLog implements Serializable {
 	
 	public String toString() {
 		return this.ind.toString();
+	}
+	
+	public Long toLong() {
+	    return this.ind;
 	}
 	
 }
