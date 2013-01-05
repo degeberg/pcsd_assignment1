@@ -222,7 +222,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         }
     }
     
-    synchronized private void lockRead(KeyImpl k) {
+    private void lockRead(KeyImpl k) {
         ReentrantReadWriteLock l = getLock(k);
         l.readLock().lock();
     }
@@ -240,7 +240,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         return true;
     }
     
-    synchronized private void lockWrite(KeyImpl k) {
+    private void lockWrite(KeyImpl k) {
         ReentrantReadWriteLock l = getLock(k);
         l.writeLock().lock();
         notifyAll();
@@ -259,7 +259,7 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
         return true;
     }
     
-    synchronized private void unlock(KeyImpl k) {
+    private void unlock(KeyImpl k) {
         ReentrantReadWriteLock l = getLock(k);
         if (l.isWriteLocked()) {
             l.writeLock().unlock();
