@@ -1,5 +1,6 @@
 package assignmentImplementation;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 import keyValueBaseExceptions.KeyAlreadyPresentException;
 import keyValueBaseExceptions.KeyNotFoundException;
 import keyValueBaseExceptions.ServiceAlreadyConfiguredException;
+import keyValueBaseExceptions.ServiceAlreadyInitializedException;
+import keyValueBaseExceptions.ServiceInitializingException;
 import keyValueBaseExceptions.ServiceNotInitializedException;
 import keyValueBaseInterfaces.Configuration;
 import keyValueBaseInterfaces.KeyValueBaseMaster;
@@ -24,6 +27,15 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
         super();
         replicator = new ReplicatorImpl();
         replicator.start();
+    }
+
+    @Override
+    public void init(String serverFilename)
+            throws ServiceAlreadyInitializedException,
+            ServiceInitializingException, FileNotFoundException {
+        super.init(serverFilename);
+        LogRecord record = new LogRecord(kv.getClass(), "init", new Object[]{serverFilename});
+        replicate(record);      
     }
     
     private void replicate(LogRecord record) {
