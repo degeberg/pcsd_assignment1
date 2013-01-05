@@ -10,7 +10,9 @@ import javax.jws.soap.SOAPBinding.Style;
 
 import keyValueBaseExceptions.KeyAlreadyPresentException;
 import keyValueBaseExceptions.KeyNotFoundException;
+import keyValueBaseExceptions.ServiceAlreadyConfiguredException;
 import keyValueBaseExceptions.ServiceNotInitializedException;
+import keyValueBaseInterfaces.Configuration;
 import keyValueBaseInterfaces.Pair;
 
 @WebService
@@ -62,5 +64,10 @@ public class KeyValueBaseMasterService extends KeyValueBaseReplicaService {
             al.add(new Pair<KeyImpl, ValueListImpl>(ks.get(i), vls.get(i)));
         
     	kv().bulkPut(al);
+    }
+    
+    @WebMethod
+    public void config(Configuration conf) throws ServiceAlreadyConfiguredException {
+        kv().config(conf);
     }
 }
