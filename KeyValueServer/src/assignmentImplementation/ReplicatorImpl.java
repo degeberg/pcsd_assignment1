@@ -2,6 +2,7 @@ package assignmentImplementation;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -18,19 +19,22 @@ import clientClasses.KeyValueBaseSlaveServiceService;
 
 public class ReplicatorImpl extends Thread implements Replicator {
     
-    private ArrayList<KeyValueBaseSlaveServiceService> slaves;
+    private ConcurrentLinkedQueue<KeyValueBaseSlaveServiceService> slaves;
     private ExecutorService executor;
     
     public ReplicatorImpl() {
-        slaves = new ArrayList<>();
+        slaves = new ConcurrentLinkedQueue<>();
     }
     
     public void setSlaves(ArrayList<KeyValueBaseSlaveServiceService> slaves) {
-        this.slaves = slaves;
+        synchronized (slaves) {
+            this.slaves.addAll(slaves);
+        }
     }
 
 	@Override
 	public Future<?> makeStable(final LogRecord record) {
+	    System.out.println("Replicate " + record.getMethodName() + " to " + slaves.size() + " slaves.");
         Future<?> f = executor.submit(new Callable<Void>() {
             public Void call() throws Exception {
                 clientClasses.LogRecord log = new clientClasses.LogRecord();
@@ -44,9 +48,13 @@ public class ReplicatorImpl extends Thread implements Replicator {
                 
                 for (KeyValueBaseSlaveServiceService slave : slaves) {
                     try {
+                        System.err.println("Replicating to slave");
                         slave.getKeyValueBaseSlaveServicePort().logApply(log);
+                        System.err.println("Replicated to slave");
                     } catch (Exception e) {
-                        slaves.remove(slave);
+                        synchronized (slaves) {
+                            slaves.remove(slave);
+                        }
                     }
                 }
                 return null;

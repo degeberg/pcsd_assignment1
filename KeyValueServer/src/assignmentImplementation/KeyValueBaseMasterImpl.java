@@ -23,8 +23,8 @@ import clientClasses.KeyValueBaseSlaveServiceService;
 public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements KeyValueBaseMaster<KeyImpl,ValueListImpl> {
     private ReplicatorImpl replicator;
     
-    public KeyValueBaseMasterImpl() {
-        super();
+    public KeyValueBaseMasterImpl(String storePath) {
+        super(storePath);
         replicator = new ReplicatorImpl();
         replicator.start();
     }
@@ -34,11 +34,12 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
             throws ServiceAlreadyInitializedException,
             ServiceInitializingException, FileNotFoundException {
         super.init(serverFilename);
+        System.out.println("Master init");
         LogRecord record = new LogRecord(kv.getClass(), "init", new Object[]{serverFilename});
         replicate(record);      
     }
     
-    private void replicate(LogRecord record) {
+    synchronized private void replicate(LogRecord record) {
 		try {
 		    synchronized (lastLSN) {
 		        if (record.getLSN().after(lastLSN)) {
@@ -46,6 +47,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 		        }
 		    }
             replicator.makeStable(record).get();
+            System.out.println("Successfully replicated " + record.getMethodName());
         } catch (InterruptedException | ExecutionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -94,6 +96,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
         	for (String slaveUrl : conf.slaves) {
                 slaves.add(new KeyValueBaseSlaveServiceService(new URL(slaveUrl)));
         	}
+        	replicator.setSlaves(slaves);
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

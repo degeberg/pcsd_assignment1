@@ -7,7 +7,11 @@ import keyValueBaseInterfaces.LogRecord;
 
 public class KeyValueBaseSlaveImpl extends KeyValueBaseReplicaImpl implements KeyValueBaseSlave<KeyImpl, ValueListImpl> {
 
-	@Override
+	public KeyValueBaseSlaveImpl(String storePath) {
+        super(storePath);
+    }
+
+    @Override
 	public void logApply(LogRecord record) {
 		try {
 		    synchronized (lastLSN) {

@@ -27,6 +27,7 @@ import clientClasses.KeyAlreadyPresentException_Exception;
 import clientClasses.KeyNotFoundException_Exception;
 import clientClasses.KeyValueBaseMasterServiceService;
 import clientClasses.KeyValueBaseSlaveServiceService;
+import clientClasses.ServiceAlreadyConfiguredException_Exception;
 import clientClasses.ServiceAlreadyInitializedException_Exception;
 import clientClasses.ServiceInitializingException_Exception;
 import clientClasses.ServiceNotInitializedException_Exception;
@@ -68,6 +69,7 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
     	    if (n < slaves.size()) {
     	        clientClasses.KeyValueBaseSlaveService slave = slaves.get(n).getKeyValueBaseSlaveServicePort();
     	        try {
+    	            System.out.println("Read from slave " + n);
                     pair = slave.read(makeKey(k));
     	        } catch (IOException_Exception e) {
     	            slaves.remove(n);
@@ -75,6 +77,7 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
     	        }
     	    } else {
     	        try {
+    	            System.out.println("Read from master");
         	        pair = master.getKeyValueBaseMasterServicePort().read(makeKey(k));
     	        } catch (IOException_Exception e) {
     	            throw new IOException();
@@ -247,11 +250,27 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
 	@Override
 	public void config(Configuration conf)
 			throws ServiceAlreadyConfiguredException {
+	    if (master != null) {
+	        throw new ServiceAlreadyConfiguredException();
+	    }
+	    
         try {
             for (String slaveUrl : conf.slaves) {
                 slaves.add(new KeyValueBaseSlaveServiceService(new URL(slaveUrl)));
             }
             master = new KeyValueBaseMasterServiceService(new URL(conf.master));
+            
+            clientClasses.Configuration fakeConf = new clientClasses.Configuration();
+			fakeConf.setMaster(conf.master);
+			for (String slave : conf.slaves) {
+			    fakeConf.getSlaves().add(slave);
+			}
+            
+            try {
+                master.getKeyValueBaseMasterServicePort().config(fakeConf);
+            } catch (ServiceAlreadyConfiguredException_Exception e) {
+                throw new ServiceAlreadyConfiguredException();
+            }
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

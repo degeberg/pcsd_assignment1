@@ -18,9 +18,10 @@ public class KeyValueBaseReplicaImpl implements KeyValueBaseReplica<KeyImpl, Val
     protected KeyValueBaseImpl kv;
     protected TimestampLog lastLSN;
     
-    public KeyValueBaseReplicaImpl() {
+    public KeyValueBaseReplicaImpl(String storePath) {
+        lastLSN = new TimestampLog(0L);
         try {
-            IndexImpl index = new IndexImpl();
+            IndexImpl index = new IndexImpl(storePath);
             kv = new KeyValueBaseImpl(index);
         } catch (IndexOutOfBoundsException | IOException e) {
             // TODO Auto-generated catch block
@@ -32,6 +33,7 @@ public class KeyValueBaseReplicaImpl implements KeyValueBaseReplica<KeyImpl, Val
 	public void init(String serverFilename)
 			throws ServiceAlreadyInitializedException,
 			ServiceInitializingException, FileNotFoundException {
+	    System.out.println("Replica init");
 		kv.init(serverFilename);
 	}
 

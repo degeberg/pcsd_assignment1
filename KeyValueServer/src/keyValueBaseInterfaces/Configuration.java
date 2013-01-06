@@ -9,5 +9,5 @@ package keyValueBaseInterfaces;
  */
 public class Configuration {
 	public String master = "http://localhost:8080/keyvalue/kvmaster?wsdl";
-	public String[] slaves = { "http://localhost:8080/keyvalue/kvslave1?wsdl" };
+	public String[] slaves = { "http://localhost:8080/keyvalue/kvslave?wsdl" };
 }

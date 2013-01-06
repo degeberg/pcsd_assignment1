@@ -28,7 +28,7 @@ public class KeyValueBaseService {
 	public void dummy(LengthPredicate p) { }
 	
     public KeyValueBaseService() throws IndexOutOfBoundsException, IOException {
-    	idx = new IndexImpl();
+    	idx = new IndexImpl("/tmp/pcsd_store");
     	lort = new KeyValueBaseImpl(idx);
     }
 

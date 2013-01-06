@@ -20,8 +20,8 @@ public class IndexImpl implements Index<KeyImpl,ValueListImpl>
     private LinkedList<LogEntry> transactionLog;
     private ValueSerializerImpl ser;
     
-    public IndexImpl() throws IndexOutOfBoundsException, IOException {
-        store = new StoreImpl();
+    public IndexImpl(String storePath) throws IndexOutOfBoundsException, IOException {
+        store = new StoreImpl(storePath);
         positions = new TreeMap<>();
         blocks = new ArrayList<>();
         blocks.add(new Pair<>(0L, store.getTotalSize()));

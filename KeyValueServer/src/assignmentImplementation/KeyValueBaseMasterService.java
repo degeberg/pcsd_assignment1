@@ -23,7 +23,7 @@ public class KeyValueBaseMasterService extends KeyValueBaseReplicaService {
 
     public KeyValueBaseMasterService() throws IndexOutOfBoundsException,
             IOException {
-        kv = new KeyValueBaseMasterImpl();
+        kv = new KeyValueBaseMasterImpl("/tmp/pcsd_store_master");
     }
 
     protected KeyValueBaseMasterImpl kv() {
