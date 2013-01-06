@@ -6,6 +6,13 @@
 		</listener-class>
 	</listener>
 	<servlet>
+		<servlet-name>KeyValueProxy</servlet-name>
+		<servlet-class>
+			com.sun.xml.ws.transport.http.servlet.WSServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
 		<servlet-name>KeyValueMaster</servlet-name>
 		<servlet-class>
 			com.sun.xml.ws.transport.http.servlet.WSServlet
@@ -26,6 +33,10 @@
 	<servlet-mapping>
 		<servlet-name>KeyValueSlave</servlet-name>
 		<url-pattern>/kvslave</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>KeyValueProxy</servlet-name>
+		<url-pattern>/kvproxy</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>120</session-timeout>

@@ -3,6 +3,10 @@
   xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
   version="2.0">
   <endpoint
+      name="KeyValueProxy"
+      implementation="assignmentImplementation.KeyValueBaseProxyService"
+      url-pattern="/kvproxy"/>
+  <endpoint
       name="KeyValueMaster"
       implementation="assignmentImplementation.KeyValueBaseMasterService"
       url-pattern="/kvmaster"/>
