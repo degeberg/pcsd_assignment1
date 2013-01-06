@@ -1,6 +1,7 @@
 package assignmentImplementation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.WebMethod;
@@ -35,25 +36,34 @@ abstract public class KeyValueBaseReplicaService {
     }
 
     @WebMethod
-    public Pair<TimestampLog, ValueListImpl> read(KeyImpl k) throws KeyNotFoundException,
+    public SingleReadPair read(KeyImpl k) throws KeyNotFoundException,
             IOException, ServiceNotInitializedException {
-    	return kv().read(k);
+        SingleReadPair p = new SingleReadPair();
+        Pair<TimestampLog, ValueListImpl> p2 = kv().read(k);
+        p.setLSN(p2.getKey());
+        p.setVL(p2.getValue());
+    	return p;
     }
 
     @WebMethod
-    public Pair<TimestampLog, ValueListImpl[]> scan(KeyImpl begin, KeyImpl end,
+    public ArrayReadPair scan(KeyImpl begin, KeyImpl end,
             Predicate<ValueListImpl> p) throws IOException,
             BeginGreaterThanEndException, ServiceNotInitializedException {
         Pair<TimestampLog, List<ValueListImpl>> pair = kv().scan(begin, end, p);
-        return new Pair<>(pair.getKey(), pair.getValue().toArray(new ValueListImpl[]{}));
+        ArrayReadPair pa = new ArrayReadPair();
+        pa.setLSN(pair.getKey());
+        pa.setVL((ArrayList<ValueListImpl>)pair.getValue());
+        return pa;
     }
-
     
     @WebMethod
-    public Pair<TimestampLog, ValueListImpl[]> atomicScan(KeyImpl begin, KeyImpl end,
+    public ArrayReadPair atomicScan(KeyImpl begin, KeyImpl end,
             Predicate<ValueListImpl> p) throws IOException,
             BeginGreaterThanEndException, ServiceNotInitializedException {
         Pair<TimestampLog, List<ValueListImpl>> pair = kv().atomicScan(begin, end, p);
-        return new Pair<>(pair.getKey(), pair.getValue().toArray(new ValueListImpl[]{}));
+        ArrayReadPair pa = new ArrayReadPair();
+        pa.setLSN(pair.getKey());
+        pa.setVL((ArrayList<ValueListImpl>)pair.getValue());
+        return pa;
     }
 }

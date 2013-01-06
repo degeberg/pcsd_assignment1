@@ -27,13 +27,13 @@ public interface KeyValueBaseSlaveService {
 
     /**
      * 
-     * @param arg0
+     * @param logRecord
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseSlaveService/logApplyRequest", output = "http://assignmentImplementation/KeyValueBaseSlaveService/logApplyResponse")
     public void logApply(
-        @WebParam(name = "arg0", partName = "arg0")
-        LogRecord arg0);
+        @WebParam(name = "log_record", partName = "log_record")
+        LogRecord logRecord);
 
     /**
      * 
@@ -51,10 +51,10 @@ public interface KeyValueBaseSlaveService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
+     *     returns clientClasses.ArrayReadPair
+     * @throws BeginGreaterThanEndException_Exception
      * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws BeginGreaterThanEndException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -63,7 +63,7 @@ public interface KeyValueBaseSlaveService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/atomicScan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/atomicScan/Fault/ServiceNotInitializedException")
     })
-    public Pair atomicScan(
+    public ArrayReadPair atomicScan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")
@@ -76,8 +76,8 @@ public interface KeyValueBaseSlaveService {
     /**
      * 
      * @param arg0
-     * @throws ServiceAlreadyInitializedException_Exception
      * @throws FileNotFoundException_Exception
+     * @throws ServiceAlreadyInitializedException_Exception
      * @throws ServiceInitializingException_Exception
      */
     @WebMethod
@@ -96,10 +96,10 @@ public interface KeyValueBaseSlaveService {
      * 
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
+     *     returns clientClasses.SingleReadPair
+     * @throws KeyNotFoundException_Exception
      * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws KeyNotFoundException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -108,7 +108,7 @@ public interface KeyValueBaseSlaveService {
         @FaultAction(className = IOException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/read/Fault/IOException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/read/Fault/ServiceNotInitializedException")
     })
-    public Pair read(
+    public SingleReadPair read(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0)
         throws IOException_Exception, KeyNotFoundException_Exception, ServiceNotInitializedException_Exception
@@ -120,10 +120,10 @@ public interface KeyValueBaseSlaveService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
+     *     returns clientClasses.ArrayReadPair
+     * @throws BeginGreaterThanEndException_Exception
      * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
-     * @throws BeginGreaterThanEndException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -132,7 +132,7 @@ public interface KeyValueBaseSlaveService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/scan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseSlaveService/scan/Fault/ServiceNotInitializedException")
     })
-    public Pair scan(
+    public ArrayReadPair scan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")

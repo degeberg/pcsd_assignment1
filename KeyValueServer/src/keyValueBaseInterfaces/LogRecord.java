@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
  * <i>String</i>, which is produced by the same class's
  * <i>toString()</i> method.
  */
+@XmlRootElement
 public class LogRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static TimestampLog lastTimestamp = new TimestampLog(0L);
@@ -34,7 +36,7 @@ public class LogRecord implements Serializable {
 	private int numberParam;
 	@XmlElement
 	private TimestampLog LSN;
-	@XmlElement
+	@XmlElement(name = "object_array")
 	private Object[] params;
 
 	public LogRecord(Class<?> srcClass, String methodName, Object[] params) {

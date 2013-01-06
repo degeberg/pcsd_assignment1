@@ -45,8 +45,8 @@ public interface KeyValueBaseMasterService {
     /**
      * 
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/deleteRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/deleteResponse", fault = {
@@ -64,8 +64,8 @@ public interface KeyValueBaseMasterService {
      * @param arg1
      * @param arg0
      * @throws IOException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyAlreadyPresentException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/insertRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/insertResponse", fault = {
@@ -86,8 +86,8 @@ public interface KeyValueBaseMasterService {
      * @param arg1
      * @param arg0
      * @throws IOException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/updateRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/updateResponse", fault = {
@@ -134,9 +134,9 @@ public interface KeyValueBaseMasterService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
-     * @throws BeginGreaterThanEndException_Exception
+     *     returns clientClasses.ArrayReadPair
      * @throws IOException_Exception
+     * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
@@ -146,7 +146,7 @@ public interface KeyValueBaseMasterService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/atomicScan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/atomicScan/Fault/ServiceNotInitializedException")
     })
-    public Pair atomicScan(
+    public ArrayReadPair atomicScan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")
@@ -179,10 +179,10 @@ public interface KeyValueBaseMasterService {
      * 
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
+     *     returns clientClasses.SingleReadPair
      * @throws IOException_Exception
-     * @throws ServiceNotInitializedException_Exception
      * @throws KeyNotFoundException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -191,7 +191,7 @@ public interface KeyValueBaseMasterService {
         @FaultAction(className = IOException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/read/Fault/IOException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/read/Fault/ServiceNotInitializedException")
     })
-    public Pair read(
+    public SingleReadPair read(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0)
         throws IOException_Exception, KeyNotFoundException_Exception, ServiceNotInitializedException_Exception
@@ -203,9 +203,9 @@ public interface KeyValueBaseMasterService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.Pair
-     * @throws BeginGreaterThanEndException_Exception
+     *     returns clientClasses.ArrayReadPair
      * @throws IOException_Exception
+     * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
@@ -215,7 +215,7 @@ public interface KeyValueBaseMasterService {
         @FaultAction(className = BeginGreaterThanEndException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/scan/Fault/BeginGreaterThanEndException"),
         @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseMasterService/scan/Fault/ServiceNotInitializedException")
     })
-    public Pair scan(
+    public ArrayReadPair scan(
         @WebParam(name = "arg0", partName = "arg0")
         KeyImpl arg0,
         @WebParam(name = "arg1", partName = "arg1")

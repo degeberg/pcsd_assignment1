@@ -45,7 +45,7 @@ public class BeginGreaterThanEndException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.BeginGreaterThanEndException
+     *     returns fault bean: clientClasses.BeginGreaterThanEndException
      */
     public BeginGreaterThanEndException getFaultInfo() {
         return faultInfo;

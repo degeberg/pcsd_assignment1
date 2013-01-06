@@ -1,8 +1,13 @@
+import java.util.List;
+
 import keyValueBaseInterfaces.Configuration;
+import clientClasses.BeginGreaterThanEndException_Exception;
+import clientClasses.IOException_Exception;
 import clientClasses.KeyImpl;
 import clientClasses.KeyValueBaseProxyServiceService;
 import clientClasses.ServiceAlreadyConfiguredException_Exception;
 import clientClasses.ServiceAlreadyInitializedException_Exception;
+import clientClasses.ServiceNotInitializedException_Exception;
 import clientClasses.ValueImpl;
 import clientClasses.ValueListImpl;
 
@@ -29,8 +34,25 @@ public class Main {
 		}
 		
 		printKey(24);
-		//printKey(25);
-		//printKey(26);
+		testScan();
+
+        printKey(24);
+        ValueListImpl vl = buildList(new int[]{1, 2, 3});
+        KeyImpl key = new KeyImpl();
+        key.setKey(26);
+        kv.update(key, vl);
+        
+        printKey(26);
+    }
+
+    static private ValueListImpl buildList(int[] e) {
+        ValueListImpl vl = new ValueListImpl();
+        for (Integer a : e) {
+            ValueImpl v = new ValueImpl();
+            v.setValue(a);
+            vl.getElements().add(v);
+        }
+        return vl;
     }
     
 	static public void printKey(int k) throws Exception {
@@ -44,5 +66,26 @@ public class Main {
 		}
 		System.out.println();
 	}
+	
+    static private void testScan() throws BeginGreaterThanEndException_Exception, IOException_Exception, ServiceNotInitializedException_Exception
+    {
+        clientClasses.LengthPredicate p = new clientClasses.LengthPredicate();
+        p.setLength(5);
+        KeyImpl kbegin = new KeyImpl();
+        kbegin.setKey(24);
+        KeyImpl kend = new KeyImpl();
+        kend.setKey(27);
+            
+        clientClasses.ValueListImplArray tmp = kv.scan(kbegin, kend, p);
+        List<ValueListImpl> l = tmp.getItem();
+        System.out.println("Got list of length: " + l.size());
+        for (ValueListImpl vl2 : l) {
+            System.out.println("Resp:");
+            for (ValueImpl v : vl2.getElements()) {
+                System.out.println(v.getValue());
+            }
+            System.out.println();
+        }
+    }
 
 }

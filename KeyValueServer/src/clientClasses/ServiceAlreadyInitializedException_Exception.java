@@ -45,7 +45,7 @@ public class ServiceAlreadyInitializedException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.ServiceAlreadyInitializedException
+     *     returns fault bean: clientClasses.ServiceAlreadyInitializedException
      */
     public ServiceAlreadyInitializedException getFaultInfo() {
         return faultInfo;

@@ -22,6 +22,6 @@ public class LengthPredicate extends Predicate<ValueListImpl>
     @Override
     public boolean evaluate(ValueListImpl vl)
     {
-        return (vl.toList().size() < length);
+        return (vl.toList().size() > length);
     }
 }

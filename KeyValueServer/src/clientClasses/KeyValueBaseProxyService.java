@@ -28,23 +28,6 @@ public interface KeyValueBaseProxyService {
     /**
      * 
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
-     * @throws IOException_Exception
-     */
-    @WebMethod
-    @Action(input = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPutRequest", output = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPutResponse", fault = {
-        @FaultAction(className = IOException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPut/Fault/IOException"),
-        @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPut/Fault/ServiceNotInitializedException")
-    })
-    public void bulkPut(
-        @WebParam(name = "arg0", partName = "arg0")
-        BulkList arg0)
-        throws IOException_Exception, ServiceNotInitializedException_Exception
-    ;
-
-    /**
-     * 
-     * @param arg0
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseProxyService/dummyRequest", output = "http://assignmentImplementation/KeyValueBaseProxyService/dummyResponse")
@@ -58,9 +41,9 @@ public interface KeyValueBaseProxyService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.ValueListImplArray
-     * @throws ServiceNotInitializedException_Exception
+     *     returns clientClasses.ValueListImplArray
      * @throws BeginGreaterThanEndException_Exception
+     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
      */
     @WebMethod
@@ -83,9 +66,26 @@ public interface KeyValueBaseProxyService {
     /**
      * 
      * @param arg0
-     * @throws ServiceAlreadyInitializedException_Exception
-     * @throws ServiceInitializingException_Exception
+     * @throws IOException_Exception
+     * @throws ServiceNotInitializedException_Exception
+     */
+    @WebMethod
+    @Action(input = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPutRequest", output = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPutResponse", fault = {
+        @FaultAction(className = IOException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPut/Fault/IOException"),
+        @FaultAction(className = ServiceNotInitializedException_Exception.class, value = "http://assignmentImplementation/KeyValueBaseProxyService/bulkPut/Fault/ServiceNotInitializedException")
+    })
+    public void bulkPut(
+        @WebParam(name = "arg0", partName = "arg0")
+        BulkList arg0)
+        throws IOException_Exception, ServiceNotInitializedException_Exception
+    ;
+
+    /**
+     * 
+     * @param arg0
      * @throws FileNotFoundException_Exception
+     * @throws ServiceInitializingException_Exception
+     * @throws ServiceAlreadyInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseProxyService/initRequest", output = "http://assignmentImplementation/KeyValueBaseProxyService/initResponse", fault = {
@@ -120,9 +120,9 @@ public interface KeyValueBaseProxyService {
      * 
      * @param arg1
      * @param arg0
-     * @throws ServiceNotInitializedException_Exception
-     * @throws IOException_Exception
      * @throws KeyAlreadyPresentException_Exception
+     * @throws IOException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseProxyService/insertRequest", output = "http://assignmentImplementation/KeyValueBaseProxyService/insertResponse", fault = {
@@ -142,7 +142,7 @@ public interface KeyValueBaseProxyService {
      * 
      * @param arg0
      * @return
-     *     returns assignmentimplementation.ValueListImpl
+     *     returns clientClasses.ValueListImpl
      * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
@@ -203,10 +203,10 @@ public interface KeyValueBaseProxyService {
      * @param arg1
      * @param arg0
      * @return
-     *     returns assignmentimplementation.ValueListImplArray
-     * @throws ServiceNotInitializedException_Exception
+     *     returns clientClasses.ValueListImplArray
      * @throws BeginGreaterThanEndException_Exception
      * @throws IOException_Exception
+     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")

@@ -41,12 +41,14 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
     
     public KeyValueBaseProxyImpl() {
         r = new Random();
+        lastLSN = new TimestampLog(0L);
     }
     
 	@Override
 	public void init(String serverFilename)
 			throws ServiceAlreadyInitializedException,
-			ServiceInitializingException, FileNotFoundException {
+			ServiceInitializingException, FileNotFoundException
+	{
 	    try {
             master.getKeyValueBaseMasterServicePort().init(serverFilename);
         } catch (FileNotFoundException_Exception e) {
@@ -63,7 +65,7 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
 			IOException, ServiceNotInitializedException {
 	    int n = r.nextInt(slaves.size() + 1);
 	    
-	    clientClasses.Pair pair;
+	    clientClasses.SingleReadPair pair;
 	    
 	    try {
     	    if (n < slaves.size()) {
@@ -90,14 +92,16 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
             throw new ServiceNotInitializedException();
         }
 	    
-	    clientClasses.TimestampLog fakeLog = (clientClasses.TimestampLog) pair.getK();
+	    System.out.println("fiss");
+	    clientClasses.TimestampLog fakeLog = pair.getLSN();
+	    System.out.println("fjas");
 	    TimestampLog log = new TimestampLog(fakeLog.getInd());
 	    
 	    if (lastLSN.after(log)) {
 	        return read(k);
 	    }
 	    
-	    clientClasses.ValueListImpl fakeVl = (clientClasses.ValueListImpl) pair.getV();
+	    clientClasses.ValueListImpl fakeVl = pair.getVL();
 	    ValueListImpl vl = new ValueListImpl();
 	    for (clientClasses.ValueImpl fakeV : fakeVl.getElements()) {
 	        ValueImpl v = new ValueImpl();
@@ -167,9 +171,9 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
 	    LengthPredicate lp = (LengthPredicate)p;
 	    clientClasses.LengthPredicate lp2 = new clientClasses.LengthPredicate();
 	    lp2.setLength(lp.getLength());
-	    clientClasses.Pair pa;
+	    clientClasses.ArrayReadPair pa;
 	    try {
-            pa = master.getKeyValueBaseMasterServicePort().scan(kb, ke, lp2);
+            pa = slaves.get(0).getKeyValueBaseSlaveServicePort().scan(kb, ke, lp2);
         } catch (BeginGreaterThanEndException_Exception e) {
             throw new BeginGreaterThanEndException();
         } catch (IOException_Exception e) {
@@ -177,8 +181,8 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
         } catch (ServiceNotInitializedException_Exception e) {
             throw new ServiceNotInitializedException();
         }
-	    clientClasses.TimestampLog tsl = (clientClasses.TimestampLog)pa.getK();
-	    clientClasses.ValueListImpl[] vll = (clientClasses.ValueListImpl[])pa.getV();
+	    clientClasses.TimestampLog tsl = pa.getLSN();
+	    List<clientClasses.ValueListImpl> vll = pa.getVL();
 	    TimestampLog tsl2 = new TimestampLog(tsl.getInd());
 	    
 	    if (tsl2.before(lastLSN)) {
@@ -203,7 +207,7 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
         LengthPredicate lp = (LengthPredicate)p;
         clientClasses.LengthPredicate lp2 = new clientClasses.LengthPredicate();
         lp2.setLength(lp.getLength());
-        clientClasses.Pair pa;
+        clientClasses.ArrayReadPair pa;
         try {
             pa = master.getKeyValueBaseMasterServicePort().atomicScan(kb, ke, lp2);
         } catch (BeginGreaterThanEndException_Exception e) {
@@ -213,8 +217,8 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
         } catch (ServiceNotInitializedException_Exception e) {
             throw new ServiceNotInitializedException();
         }
-        clientClasses.TimestampLog tsl = (clientClasses.TimestampLog)pa.getK();
-        clientClasses.ValueListImpl[] vll = (clientClasses.ValueListImpl[])pa.getV();
+        clientClasses.TimestampLog tsl = pa.getLSN();
+        List<clientClasses.ValueListImpl> vll = pa.getVL();
         TimestampLog tsl2 = new TimestampLog(tsl.getInd());
         
         if (tsl2.before(lastLSN)) {

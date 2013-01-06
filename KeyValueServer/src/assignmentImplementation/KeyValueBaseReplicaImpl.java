@@ -41,7 +41,10 @@ public class KeyValueBaseReplicaImpl implements KeyValueBaseReplica<KeyImpl, Val
 	public Pair<TimestampLog, ValueListImpl> read(KeyImpl k)
 			throws KeyNotFoundException, IOException,
 			ServiceNotInitializedException {
-	    return new Pair<>(lastLSN, kv.read(k));
+	    System.out.println("replica read");
+	    Pair<TimestampLog, ValueListImpl> p = new Pair<>(lastLSN, kv.read(k));
+	    System.out.println("replica done read");
+	    return p;
 	}
 
 	@Override

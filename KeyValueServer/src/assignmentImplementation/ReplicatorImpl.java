@@ -37,14 +37,8 @@ public class ReplicatorImpl extends Thread implements Replicator {
 	    System.out.println("Replicate " + record.getMethodName() + " to " + slaves.size() + " slaves.");
         Future<?> f = executor.submit(new Callable<Void>() {
             public Void call() throws Exception {
-                clientClasses.LogRecord log = new clientClasses.LogRecord();
-                log.setClassName(record.getSrcClass());
-                clientClasses.TimestampLog lsn = new clientClasses.TimestampLog();
-                lsn.setInd(record.getLSN().toLong());
-                log.setLSN(lsn);
-                log.setMethodName(record.getMethodName());
-                log.setNumberParam(record.getNumParams());
-                log.getParams().add(record.getParams());
+                System.out.println("Callable");
+                clientClasses.LogRecord log = createLog(record);
                 
                 for (KeyValueBaseSlaveServiceService slave : slaves) {
                     try {
@@ -66,6 +60,21 @@ public class ReplicatorImpl extends Thread implements Replicator {
 	@Override
 	public void run() {
         executor = Executors.newFixedThreadPool(1);
+	}
+	
+	private clientClasses.LogRecord createLog(LogRecord record) {
+        clientClasses.LogRecord log = new clientClasses.LogRecord();
+        log.setClassName(record.getSrcClass());
+        clientClasses.TimestampLog lsn = new clientClasses.TimestampLog();
+        lsn.setInd(record.getLSN().toLong());
+        log.setLSN(lsn);
+        log.setMethodName(record.getMethodName());
+        log.setNumberParam(record.getNumParams());
+        for (Object s : record.getParams()) {
+            log.getObjectArray().add(s);
+        }
+        
+        return log;
 	}
 
 }

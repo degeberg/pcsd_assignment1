@@ -45,7 +45,7 @@ public class KeyAlreadyPresentException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.KeyAlreadyPresentException
+     *     returns fault bean: clientClasses.KeyAlreadyPresentException
      */
     public KeyAlreadyPresentException getFaultInfo() {
         return faultInfo;

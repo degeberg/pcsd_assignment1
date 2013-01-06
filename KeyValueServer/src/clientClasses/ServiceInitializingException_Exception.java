@@ -45,7 +45,7 @@ public class ServiceInitializingException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.ServiceInitializingException
+     *     returns fault bean: clientClasses.ServiceInitializingException
      */
     public ServiceInitializingException getFaultInfo() {
         return faultInfo;

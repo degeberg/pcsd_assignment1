@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="methodName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="numberParam" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="LSN" type="{http://assignmentImplementation/}timestampLog" minOccurs="0"/>
- *         &lt;element name="params" type="{http://www.w3.org/2001/XMLSchema}anyType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="object_array" type="{http://www.w3.org/2001/XMLSchema}anyType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "methodName",
     "numberParam",
     "lsn",
-    "params"
+    "objectArray"
 })
 public class LogRecord {
 
@@ -47,7 +47,8 @@ public class LogRecord {
     protected int numberParam;
     @XmlElement(name = "LSN")
     protected TimestampLog lsn;
-    protected List<Object> params;
+    @XmlElement(name = "object_array")
+    protected List<Object> objectArray;
 
     /**
      * Gets the value of the className property.
@@ -138,18 +139,18 @@ public class LogRecord {
     }
 
     /**
-     * Gets the value of the params property.
+     * Gets the value of the objectArray property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the params property.
+     * This is why there is not a <CODE>set</CODE> method for the objectArray property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getParams().add(newItem);
+     *    getObjectArray().add(newItem);
      * </pre>
      * 
      * 
@@ -159,11 +160,11 @@ public class LogRecord {
      * 
      * 
      */
-    public List<Object> getParams() {
-        if (params == null) {
-            params = new ArrayList<Object>();
+    public List<Object> getObjectArray() {
+        if (objectArray == null) {
+            objectArray = new ArrayList<Object>();
         }
-        return this.params;
+        return this.objectArray;
     }
 
 }

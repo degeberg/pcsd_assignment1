@@ -45,7 +45,7 @@ public class KeyNotFoundException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.KeyNotFoundException
+     *     returns fault bean: clientClasses.KeyNotFoundException
      */
     public KeyNotFoundException getFaultInfo() {
         return faultInfo;

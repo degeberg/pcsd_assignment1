@@ -45,7 +45,7 @@ public class IOException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.IOException
+     *     returns fault bean: clientClasses.IOException
      */
     public IOException getFaultInfo() {
         return faultInfo;

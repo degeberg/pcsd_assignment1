@@ -1,7 +1,9 @@
 package keyValueBaseInterfaces;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
+@XmlSeeAlso({keyValueBaseInterfaces.TimestampLog.class})
 public class Pair<K, V> {
 	@XmlElement
 	private K k;

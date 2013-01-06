@@ -18,6 +18,7 @@ import keyValueBaseInterfaces.Configuration;
 import keyValueBaseInterfaces.KeyValueBaseMaster;
 import keyValueBaseInterfaces.LogRecord;
 import keyValueBaseInterfaces.Pair;
+import keyValueBaseInterfaces.TimestampLog;
 import clientClasses.KeyValueBaseSlaveServiceService;
 
 public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements KeyValueBaseMaster<KeyImpl,ValueListImpl> {
@@ -35,7 +36,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
             ServiceInitializingException, FileNotFoundException {
         super.init(serverFilename);
         System.out.println("Master init");
-        LogRecord record = new LogRecord(kv.getClass(), "init", new Object[]{serverFilename});
+        LogRecord record = CreateRecord("init", new String[]{serverFilename});
         replicate(record);      
     }
     
@@ -59,7 +60,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 			throws KeyAlreadyPresentException, IOException,
 			ServiceNotInitializedException {
         kv.insert(k, v);
-		LogRecord record = new LogRecord(kv.getClass(), "insert", new Object[]{k, v});
+		LogRecord record = CreateRecord("insert", new Object[]{k, v});
 		replicate(record);
 	}
 
@@ -68,7 +69,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 			throws KeyNotFoundException, IOException,
 			ServiceNotInitializedException {
 		kv.update(k, newV);
-		LogRecord record = new LogRecord(kv.getClass(), "update", new Object[]{k, newV});
+		LogRecord record = CreateRecord( "update", new Object[]{k, newV});
 		replicate(record);
 	}
 
@@ -76,7 +77,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 	public void delete(KeyImpl k) throws KeyNotFoundException,
 			ServiceNotInitializedException {
 		kv.delete(k);
-		LogRecord record = new LogRecord(kv.getClass(), "delete", new Object[]{k});
+		LogRecord record = CreateRecord( "delete", new Object[]{k});
 		replicate(record);
 	}
 
@@ -84,7 +85,7 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
 	public void bulkPut(List<Pair<KeyImpl, ValueListImpl>> mappings)
 			throws IOException, ServiceNotInitializedException {
 	    kv.bulkPut(mappings);
-		LogRecord record = new LogRecord(kv.getClass(), "bulkPut", new Object[]{mappings});
+		LogRecord record = CreateRecord( "bulkPut", new Object[]{mappings});
 		replicate(record);
 	}
 
@@ -101,6 +102,10 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+	}
+	
+	private LogRecord CreateRecord(String name, Object[] params) {
+        return new LogRecord(kv.getClass(), name, params);
 	}
 
 }

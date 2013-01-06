@@ -45,7 +45,7 @@ public class ServiceAlreadyConfiguredException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.ServiceAlreadyConfiguredException
+     *     returns fault bean: clientClasses.ServiceAlreadyConfiguredException
      */
     public ServiceAlreadyConfiguredException getFaultInfo() {
         return faultInfo;

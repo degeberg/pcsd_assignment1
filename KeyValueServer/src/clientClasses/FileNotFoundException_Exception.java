@@ -45,7 +45,7 @@ public class FileNotFoundException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: assignmentimplementation.FileNotFoundException
+     *     returns fault bean: clientClasses.FileNotFoundException
      */
     public FileNotFoundException getFaultInfo() {
         return faultInfo;

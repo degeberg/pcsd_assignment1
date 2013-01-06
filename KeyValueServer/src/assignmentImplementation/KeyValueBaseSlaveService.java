@@ -2,6 +2,7 @@ package assignmentImplementation;
 import java.io.IOException;
 
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
@@ -24,7 +25,8 @@ public class KeyValueBaseSlaveService extends KeyValueBaseReplicaService {
     }
     
     @WebMethod
-	public void logApply(LogRecord record) {
+	public void logApply(@WebParam(name = "log_record") LogRecord record) {
+        System.out.println("service logapply");
         kv().logApply(record);
     }
     
