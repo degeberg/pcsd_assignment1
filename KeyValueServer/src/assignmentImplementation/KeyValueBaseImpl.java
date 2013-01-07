@@ -243,7 +243,9 @@ public class KeyValueBaseImpl implements KeyValueBase<KeyImpl, ValueListImpl> {
     private void lockWrite(KeyImpl k) {
         ReentrantReadWriteLock l = getLock(k);
         l.writeLock().lock();
-        notifyAll();
+        synchronized (this) {
+            notifyAll();
+        }
     }
     
     private boolean lockWriteMany(List<KeyImpl> ks) {
