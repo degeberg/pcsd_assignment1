@@ -1,0 +1,139 @@
+\documentclass[a4paper,final]{article}
+
+\usepackage{a4wide}
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[protrusion=true,expansion=true]{microtype} % better typography
+
+% Math
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathabx}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defn}{Definition}[section]
+
+\newcommand{\bbN}{\mathbb N} %the natural numbers
+\newcommand{\bbZ}{\mathbb Z} %the integers
+\newcommand{\bbQ}{\mathbb Q} %the rational numbers
+\newcommand{\bbR}{\mathbb R} %the real numbers
+\newcommand{\bbC}{\mathbb C} %the complex numbers
+
+% Graphic stuff
+\usepackage[pdftex]{graphicx}
+\usepackage[usenames,dvipsnames,table]{xcolor}
+\definecolor{shade}{RGB}{235,235,235}
+\usepackage[pdftex,colorlinks=true]{hyperref}
+\hypersetup
+{
+    bookmarksnumbered,
+    linkcolor=RoyalBlue,
+    anchorcolor=RoyalBlue,
+    citecolor=RoyalBlue,
+    urlcolor=RoyalBlue,
+    pdfstartview={FitV},
+    pdfdisplaydoctitle
+}
+
+% Tables
+\usepackage{booktabs}
+\usepackage[hang,small,bf]{caption}
+
+% Debug, etc.
+\usepackage{todonotes}
+
+% Computer science stuff
+\usepackage{clrscode3e}
+\usepackage{verbatim}
+\newcommand{\mono}[1]{{\ttfamily#1}}
+\usepackage{listings}
+\lstset
+{
+    tabsize=2,
+    numbers=left,
+    breaklines=true,
+    backgroundcolor=\color{shade},
+    framexleftmargin=0.05in,
+    basicstyle=\ttfamily\small,
+    numberstyle=\tiny,
+    keywordstyle=\color{RoyalBlue},
+    stringstyle=\color{Maroon},
+    commentstyle=\color{ForestGreen},
+    language=Matlab
+}
+
+
+
+\usepackage{subfig}
+\newcommand{\subfigureautorefname}{\figureautorefname}
+
+
+\title{Principles of Computer Systems Design -- Assignment 3}
+\date{\today}
+\author{Daniel Egeberg \and Søren Dahlgaard}
+
+\begin{document}
+
+\maketitle
+
+\section{Exercises}
+
+\subsection*{Question 1}
+
+\subsection*{Question 2}
+
+The Exokernel is an example of the End-to-end argument, in the way, that
+there is no underlying abstractions that can slow the application down.
+For instance, if you want to access a file, you can access the blocks directly,
+and don't have to create file descriptors and check for access rights. This
+is what most operating systems do in order to ensure security, which is more
+important in the general case.
+
+Encrypted data transmission has a three-fold end-to-end argument as
+described in the course literature. The transmission system must be trusted
+to manage the encryption keys, the authenticity of the data must still be
+checked at high-level after transferred, and we note, that the data is
+vulnerable while being transferred from the application to the transmission
+system. This all talks in favor of a design like TLS/SSL, where the encryption
+is a protocol on top of the transport layer. If we want to ensure, that data
+cannot be accidentally or intentionally be sent un-encrypted, we must use
+encryption in the transmission system, so as in most cases, it all depends
+on the application scenario.
+
+\subsection*{Question 3}
+
+The daisy chain connects all buildings if both links work. This is easily
+described as:
+\begin{align*}
+    \text{Pr}\{\text{daisy chain good}\} &= (1-p)^2 \\
+                                         &= 1 - 2p + p^2
+\end{align*}
+
+The fully connected one works as long as at most one link is down. This can
+be described as:
+\begin{align*}
+    \text{Pr}\{\text{fully connected good}\} &= (1-p)^3 - 3p(1-p)^2 \\
+                                            &= 1 - 3p^2 + 2p^3
+\end{align*}
+
+The fully connected version provides better reliability since
+$3\cdot (10^{-4})^2 < 2\cdot 10^{-6}$.
+
+
+\section{Implementation}
+
+\subsection*{Question 1}
+
+\subsection*{Question 2}
+
+\subsection*{Question 3}
+
+\subsection*{Question 4}
+
+%\begin{thebibliography}{9}
+%\end{thebibliography}
+
+
+\end{document}
