@@ -18,6 +18,7 @@ public class KeyValueBaseSlaveService extends KeyValueBaseReplicaService {
     public KeyValueBaseSlaveService() throws IndexOutOfBoundsException,
             IOException {
         kv = new KeyValueBaseSlaveImpl("/tmp/pcsd_store_slave");
+        LogRecord.dummy(null, null, null);
     }
 
     protected KeyValueBaseSlaveImpl kv() {

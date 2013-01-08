@@ -34,6 +34,11 @@ public class ReplicatorImpl extends Thread implements Replicator {
 
 	@Override
 	public Future<?> makeStable(final LogRecord record) {
+        clientClasses.LogRecord log = createLog(record);
+        System.err.println("Replicating to slave");
+        slaves.peek().getKeyValueBaseSlaveServicePort().logApply(log);
+        System.err.println("Replicated to slave");
+        /*
 	    System.out.println("Replicate " + record.getMethodName() + " to " + slaves.size() + " slaves.");
         Future<?> f = executor.submit(new Callable<Void>() {
             public Void call() throws Exception {
@@ -54,7 +59,7 @@ public class ReplicatorImpl extends Thread implements Replicator {
                 return null;
             }
         });
-		return f;
+		return f;*/ return null;
 	}
 
 	@Override
@@ -71,7 +76,17 @@ public class ReplicatorImpl extends Thread implements Replicator {
         log.setMethodName(record.getMethodName());
         log.setNumberParam(record.getNumParams());
         for (Object s : record.getParams()) {
-            log.getObjectArray().add(s);
+            if (s instanceof KeyImpl) {
+                log.getObjectArray().add(KeyValueBaseProxyImpl.makeKey((KeyImpl)s));
+            }
+            else if (s instanceof ValueImpl) {
+                log.getObjectArray().add(KeyValueBaseProxyImpl.makeV((ValueImpl)s));
+            }
+            else if (s instanceof ValueListImpl) {
+                log.getObjectArray().add(KeyValueBaseProxyImpl.makeVL((ValueListImpl)s));
+            }
+            else
+                log.getObjectArray().add(s);
         }
         
         return log;

@@ -77,8 +77,8 @@ public interface KeyValueBaseSlaveService {
      * 
      * @param arg0
      * @throws FileNotFoundException_Exception
-     * @throws ServiceAlreadyInitializedException_Exception
      * @throws ServiceInitializingException_Exception
+     * @throws ServiceAlreadyInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseSlaveService/initRequest", output = "http://assignmentImplementation/KeyValueBaseSlaveService/initResponse", fault = {
@@ -97,8 +97,8 @@ public interface KeyValueBaseSlaveService {
      * @param arg0
      * @return
      *     returns clientClasses.SingleReadPair
-     * @throws KeyNotFoundException_Exception
      * @throws IOException_Exception
+     * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod

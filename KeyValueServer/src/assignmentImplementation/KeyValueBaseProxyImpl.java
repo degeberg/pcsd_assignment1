@@ -281,20 +281,20 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
         }
 	}
 
-    // Private shit!
-    private static clientClasses.KeyImpl makeKey(KeyImpl k) {
+    // Conversion stuff
+    public static clientClasses.KeyImpl makeKey(KeyImpl k) {
         clientClasses.KeyImpl k2 = new clientClasses.KeyImpl();
         k2.setKey(k.getKey());
         return k2;
     }
     
-    private static clientClasses.ValueImpl makeV(ValueImpl v) {
+    public static clientClasses.ValueImpl makeV(ValueImpl v) {
         clientClasses.ValueImpl v2 = new clientClasses.ValueImpl();
         v2.setValue(v.getValue());
         return v2;
     }
     
-    private static clientClasses.ValueListImpl makeVL(ValueListImpl vl) {
+    public static clientClasses.ValueListImpl makeVL(ValueListImpl vl) {
         clientClasses.ValueListImpl vl2 = new clientClasses.ValueListImpl();
         for (ValueImpl v : vl.toList()) {
             vl2.getElements().add(makeV(v));
@@ -302,7 +302,7 @@ public class KeyValueBaseProxyImpl implements KeyValueBaseProxy<KeyImpl,ValueLis
         return vl2;
     }
     
-    private static ValueListImpl getVL(clientClasses.ValueListImpl vl) {
+    public static ValueListImpl getVL(clientClasses.ValueListImpl vl) {
         ValueListImpl vl2 = new ValueListImpl();
         for (clientClasses.ValueImpl v : vl.getElements()) {
             ValueImpl v2 = new ValueImpl();
