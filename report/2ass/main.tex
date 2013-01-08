@@ -125,10 +125,41 @@ $3\cdot (10^{-4})^2 < 2\cdot 10^{-6}$.
 \section{Implementation}
 
 \subsection*{Question 1}
+The \mono{KeyValueBaseMasterImpl} has been given a \mono{replicatorImpl}, to
+make sure all writes are replicated to the slaves. This invocation of the
+replicator has been added to all modifyin operations (update, insert, delete,
+bulkput and init). Note, that the init operation is easily done with the
+replicator. The \mono{config} operation adds all the slaves to the replicator
+by simply creating the services with the given url.
+
+Also, we have create \mono{KeyValueBaseReplicaImpl} as a common base class
+for the master and slave. The only change is, that it also stores the last
+LSN, which is returned in all requests.
+
+The \mono{ReplicatorImpl} keeps a list of all active slaves, and removes a
+slave if it is unreachable.
 
 \subsection*{Question 2}
+The slave uses the \mono{KeyValueBaseReplicaImpl} as a base class, so it is
+able to handle LSNs automatically. The only change to the slave is thus, that
+it handles the logApply operation. This is just forwarded to the
+\mono{logRecord}.
 
 \subsection*{Question 3}
+The majority of the proxy deals with transforming the data coming from the
+slave/master services into data that can be returned to the sender. This
+also includes exceptions, which have to be rethrown.
+
+Each operation is performed by picking at random a master/slave (or just the
+master if it's a modifying operation) and forwarding the operation to this
+service. The proxy thus keeps a list of all available slaves and the master.
+
+When it receives a LSN it compares the LSN to the one it keeps itself, and if
+the received LSN is newer, the state of the proxy is updated. If it is older,
+the operation is rerun on a new random slave/master until we receive an
+up-to-date LSN. This can potentially cause a lot of false-negatives, which
+will slow the performance, but it makes the state a lot easier to maintain
+(only one LSN needs to be stored).
 
 \subsection*{Question 4}
 
