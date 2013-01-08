@@ -163,6 +163,20 @@ will slow the performance, but it makes the state a lot easier to maintain
 
 \subsection*{Question 4}
 
+Suppose we have $n$ slaves and $m$ proxies in the current system. Setup $n$ new
+slaves, $m$ new proxies and 1 new master. The new proxies should have both the
+old and new slaves as slaves. The new master should only have the new slaves.
+The new system should be \mono{init}ed with an empty file. Clients should use
+the new proxies immediately.
+
+With this setup, when the new proxies read from the new slaves, it will get a
+low LSN and reissue the read to another slave. This should eventually be one of
+the old ones. At this point we can rewrite it to the new master, thus
+replicating it to the new slaves. This will eventually get the information
+copied to the new system. Assuming we can get a list of the keys, we can write
+a client that simply reads all keys. When this is done we can shut down the old
+system.
+
 %\begin{thebibliography}{9}
 %\end{thebibliography}
 
