@@ -28,8 +28,8 @@ public interface KeyValueBaseMasterService {
     /**
      * 
      * @param arg0
-     * @throws IOException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/bulkPutRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/bulkPutResponse", fault = {
@@ -45,8 +45,8 @@ public interface KeyValueBaseMasterService {
     /**
      * 
      * @param arg0
-     * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws KeyNotFoundException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/deleteRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/deleteResponse", fault = {
@@ -63,9 +63,9 @@ public interface KeyValueBaseMasterService {
      * 
      * @param arg1
      * @param arg0
+     * @throws ServiceNotInitializedException_Exception
      * @throws IOException_Exception
      * @throws KeyAlreadyPresentException_Exception
-     * @throws ServiceNotInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/insertRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/insertResponse", fault = {
@@ -85,9 +85,9 @@ public interface KeyValueBaseMasterService {
      * 
      * @param arg1
      * @param arg0
-     * @throws IOException_Exception
-     * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws KeyNotFoundException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/updateRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/updateResponse", fault = {
@@ -135,9 +135,9 @@ public interface KeyValueBaseMasterService {
      * @param arg0
      * @return
      *     returns clientClasses.ArrayReadPair
-     * @throws IOException_Exception
      * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -160,8 +160,8 @@ public interface KeyValueBaseMasterService {
      * 
      * @param arg0
      * @throws FileNotFoundException_Exception
-     * @throws ServiceAlreadyInitializedException_Exception
      * @throws ServiceInitializingException_Exception
+     * @throws ServiceAlreadyInitializedException_Exception
      */
     @WebMethod
     @Action(input = "http://assignmentImplementation/KeyValueBaseMasterService/initRequest", output = "http://assignmentImplementation/KeyValueBaseMasterService/initResponse", fault = {
@@ -180,9 +180,9 @@ public interface KeyValueBaseMasterService {
      * @param arg0
      * @return
      *     returns clientClasses.SingleReadPair
-     * @throws IOException_Exception
-     * @throws KeyNotFoundException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws KeyNotFoundException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")
@@ -204,9 +204,9 @@ public interface KeyValueBaseMasterService {
      * @param arg0
      * @return
      *     returns clientClasses.ArrayReadPair
-     * @throws IOException_Exception
      * @throws BeginGreaterThanEndException_Exception
      * @throws ServiceNotInitializedException_Exception
+     * @throws IOException_Exception
      */
     @WebMethod
     @WebResult(partName = "return")

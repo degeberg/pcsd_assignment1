@@ -6,6 +6,11 @@ import java.lang.reflect.Method;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+import assignmentImplementation.KeyImpl;
+import assignmentImplementation.ValueImpl;
+import assignmentImplementation.ValueListImpl;
 
 /**
  * 
@@ -24,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * <i>toString()</i> method.
  */
 @XmlRootElement
+@XmlSeeAlso({KeyImpl.class, ValueImpl.class, ValueListImpl.class})
 public class LogRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static TimestampLog lastTimestamp = new TimestampLog(0L);
@@ -38,6 +44,8 @@ public class LogRecord implements Serializable {
 	private TimestampLog LSN;
 	@XmlElement(name = "object_array")
 	private Object[] params;
+	
+	public static void dummy(KeyImpl k, ValueImpl v, ValueListImpl vl) { }
 
 	public LogRecord(Class<?> srcClass, String methodName, Object[] params) {
 		this(srcClass.getCanonicalName(), methodName, params);

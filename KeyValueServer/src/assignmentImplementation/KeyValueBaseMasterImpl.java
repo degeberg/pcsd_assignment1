@@ -47,9 +47,9 @@ public class KeyValueBaseMasterImpl extends KeyValueBaseReplicaImpl implements K
         		    lastLSN = record.getLSN();
 		        }
 		    }
-            replicator.makeStable(record).get();
+            replicator.makeStable(record);//.get();
             System.out.println("Successfully replicated " + record.getMethodName());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (Exception e) {//InterruptedException | ExecutionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
